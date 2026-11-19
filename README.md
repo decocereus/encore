@@ -3,7 +3,7 @@
 A menu bar player for YouTube Music on macOS. It's a small glass pill under the menu bar that shows what's playing, with play/pause. Click it and it grows into a drawer with the full player, your liked songs and playlists, search, and the queue.
 
 <p>
-  <img src="docs/pill.png" width="300" alt="The compact pill under the menu bar, showing the current song and a pause button">
+  <img src="docs/pill.png" width="300" alt="The compact pill under the menu bar: the current song, volume, and previous, pause and next buttons">
 </p>
 <p>
   <img src="docs/now-playing.png" width="300" alt="The expanded drawer with album art, scrubber, playback controls and tabs">
