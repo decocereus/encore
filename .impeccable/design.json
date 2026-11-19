@@ -1,0 +1,465 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-19T00:00:00Z",
+  "title": "Design System: Encore",
+  "extensions": {
+    "platform": "macos-26-swiftui",
+    "unverified": [
+      "Light appearance: never captured. Frontmatter colours are dark-appearance resolutions of SwiftUI semantic styles; light legibility of the artwork tint (blur 40, opacity 0.5) and the fill ladder is unverified.",
+      "Ducked state: never captured. DuckBadge in the drawer header and the 'Lowered for {app}' line in the pill are documented from source only."
+    ],
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "System Accent",
+        "canonical": "Color.accentColor",
+        "note": "Follows the user's System Settings accent; #0A84FF is dark-appearance system blue. Captures read slightly deeper on glass.",
+        "tonalRamp": [
+          "#06264d",
+          "#0a3a75",
+          "#0c4f9f",
+          "#0a66cc",
+          "#0A84FF",
+          "#4aa3ff",
+          "#8cc4ff",
+          "#cfe6ff"
+        ]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Warning Orange",
+        "canonical": "Color.orange",
+        "note": "Connect error label only.",
+        "tonalRamp": [
+          "#4d2e03",
+          "#754605",
+          "#9f5f07",
+          "#cc7a08",
+          "#FF9F0A",
+          "#ffb648",
+          "#ffcd88",
+          "#ffe6c7"
+        ]
+      },
+      "label": {
+        "role": "neutral",
+        "displayName": "Label",
+        "canonical": "HierarchicalShapeStyle.primary",
+        "tonalRamp": [
+          "rgba(255,255,255,0.25)",
+          "rgba(255,255,255,0.35)",
+          "rgba(255,255,255,0.45)",
+          "rgba(255,255,255,0.55)",
+          "rgba(255,255,255,0.65)",
+          "rgba(255,255,255,0.75)",
+          "rgba(255,255,255,0.85)",
+          "rgba(255,255,255,1)"
+        ]
+      },
+      "label-secondary": {
+        "role": "neutral",
+        "displayName": "Secondary Label",
+        "canonical": "HierarchicalShapeStyle.secondary",
+        "tonalRamp": [
+          "rgba(255,255,255,0.25)",
+          "rgba(255,255,255,0.35)",
+          "rgba(255,255,255,0.45)",
+          "rgba(255,255,255,0.55)",
+          "rgba(255,255,255,0.65)",
+          "rgba(255,255,255,0.75)",
+          "rgba(255,255,255,0.85)",
+          "rgba(255,255,255,1)"
+        ]
+      },
+      "label-tertiary": {
+        "role": "neutral",
+        "displayName": "Tertiary Label",
+        "canonical": "HierarchicalShapeStyle.tertiary",
+        "tonalRamp": [
+          "rgba(255,255,255,0.25)",
+          "rgba(255,255,255,0.35)",
+          "rgba(255,255,255,0.45)",
+          "rgba(255,255,255,0.55)",
+          "rgba(255,255,255,0.65)",
+          "rgba(255,255,255,0.75)",
+          "rgba(255,255,255,0.85)",
+          "rgba(255,255,255,1)"
+        ]
+      },
+      "fill-rest": {
+        "role": "neutral",
+        "displayName": "Fill Rest",
+        "canonical": ".primary.opacity(0.06)",
+        "tonalRamp": [
+          "rgba(255, 255, 255, 0.04)",
+          "rgba(255, 255, 255, 0.06)",
+          "rgba(255, 255, 255, 0.07)",
+          "rgba(255, 255, 255, 0.08)",
+          "rgba(255, 255, 255, 0.10)",
+          "rgba(255, 255, 255, 0.14)",
+          "rgba(255, 255, 255, 0.20)",
+          "rgba(255, 255, 255, 0.30)"
+        ]
+      },
+      "fill-hover": {
+        "role": "neutral",
+        "displayName": "Fill Hover",
+        "canonical": ".primary.opacity(0.07)",
+        "tonalRamp": [
+          "rgba(255, 255, 255, 0.04)",
+          "rgba(255, 255, 255, 0.06)",
+          "rgba(255, 255, 255, 0.07)",
+          "rgba(255, 255, 255, 0.08)",
+          "rgba(255, 255, 255, 0.10)",
+          "rgba(255, 255, 255, 0.14)",
+          "rgba(255, 255, 255, 0.20)",
+          "rgba(255, 255, 255, 0.30)"
+        ]
+      },
+      "fill-field": {
+        "role": "neutral",
+        "displayName": "Fill Field",
+        "canonical": ".primary.opacity(0.08)",
+        "tonalRamp": [
+          "rgba(255, 255, 255, 0.04)",
+          "rgba(255, 255, 255, 0.06)",
+          "rgba(255, 255, 255, 0.07)",
+          "rgba(255, 255, 255, 0.08)",
+          "rgba(255, 255, 255, 0.10)",
+          "rgba(255, 255, 255, 0.14)",
+          "rgba(255, 255, 255, 0.20)",
+          "rgba(255, 255, 255, 0.30)"
+        ]
+      },
+      "fill-control": {
+        "role": "neutral",
+        "displayName": "Fill Control",
+        "canonical": ".primary.opacity(0.1)",
+        "tonalRamp": [
+          "rgba(255, 255, 255, 0.04)",
+          "rgba(255, 255, 255, 0.06)",
+          "rgba(255, 255, 255, 0.07)",
+          "rgba(255, 255, 255, 0.08)",
+          "rgba(255, 255, 255, 0.10)",
+          "rgba(255, 255, 255, 0.14)",
+          "rgba(255, 255, 255, 0.20)",
+          "rgba(255, 255, 255, 0.30)"
+        ]
+      },
+      "fill-selected": {
+        "role": "neutral",
+        "displayName": "Fill Selected",
+        "canonical": ".primary.opacity(0.14)",
+        "tonalRamp": [
+          "rgba(255, 255, 255, 0.04)",
+          "rgba(255, 255, 255, 0.06)",
+          "rgba(255, 255, 255, 0.07)",
+          "rgba(255, 255, 255, 0.08)",
+          "rgba(255, 255, 255, 0.10)",
+          "rgba(255, 255, 255, 0.14)",
+          "rgba(255, 255, 255, 0.20)",
+          "rgba(255, 255, 255, 0.30)"
+        ]
+      },
+      "fill-on": {
+        "role": "neutral",
+        "displayName": "Fill On",
+        "canonical": ".primary.opacity(0.2)",
+        "tonalRamp": [
+          "rgba(255, 255, 255, 0.04)",
+          "rgba(255, 255, 255, 0.06)",
+          "rgba(255, 255, 255, 0.07)",
+          "rgba(255, 255, 255, 0.08)",
+          "rgba(255, 255, 255, 0.10)",
+          "rgba(255, 255, 255, 0.14)",
+          "rgba(255, 255, 255, 0.20)",
+          "rgba(255, 255, 255, 0.30)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "title": {
+        "displayName": "Title",
+        "canonical": ".title3.weight(.semibold)",
+        "purpose": "Current track title in the drawer."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "canonical": ".headline",
+        "purpose": "Empty, error and Connect titles; playlist name in its header."
+      },
+      "body-strong": {
+        "displayName": "Body Strong",
+        "canonical": ".callout.weight(.semibold | .medium)",
+        "purpose": "Pill title, current-row title, playlist and browser names, Play label."
+      },
+      "body": {
+        "displayName": "Body",
+        "canonical": ".callout",
+        "purpose": "Row titles, explanations, search field."
+      },
+      "subheadline": {
+        "displayName": "Subheadline",
+        "canonical": ".subheadline",
+        "purpose": "Artist · album; semibold for list section labels."
+      },
+      "label": {
+        "displayName": "Label",
+        "canonical": ".caption.weight(.medium)",
+        "purpose": "Tab labels, duck badge."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "canonical": ".caption / .caption2",
+        "purpose": "Subtitles, pill artist line, mini player, keychain note."
+      },
+      "time": {
+        "displayName": "Time",
+        "canonical": ".caption2.monospacedDigit()",
+        "purpose": "Scrubber times with .numericText() transition."
+      }
+    },
+    "materials": [
+      {
+        "name": "panel-glass",
+        "value": ".glassEffect(.regular, in: .rect(cornerRadius: 28))",
+        "purpose": "The single panel surface, over ArtworkTint; window shadow off (hasShadow = false)."
+      },
+      {
+        "name": "tab-glass",
+        "value": ".glassEffect(.regular.interactive(), in: .capsule)",
+        "purpose": "The bottom tab capsule; the only other glass."
+      },
+      {
+        "name": "artwork-tint",
+        "value": "cover image, scaledToFill, blur(radius: 40), opacity(0.5), crossfade 0.6s",
+        "purpose": "Gives the panel the current cover's colour."
+      }
+    ],
+    "shadows": [
+      {
+        "name": "artwork-lift",
+        "value": ".shadow(color: .black.opacity(0.3), radius: 16, y: 8)",
+        "purpose": "Large drawer artwork only."
+      }
+    ],
+    "metrics": [
+      {
+        "name": "panel-width",
+        "value": "360pt"
+      },
+      {
+        "name": "pill-height",
+        "value": "56pt"
+      },
+      {
+        "name": "drawer-height",
+        "value": "620pt"
+      },
+      {
+        "name": "panel-radius",
+        "value": "28pt"
+      },
+      {
+        "name": "panel-margin",
+        "value": "12pt"
+      },
+      {
+        "name": "drawer-header-height",
+        "value": "52pt"
+      },
+      {
+        "name": "art-pill",
+        "value": "40pt circle"
+      },
+      {
+        "name": "art-drawer",
+        "value": "232pt, 18pt radius"
+      },
+      {
+        "name": "art-mini",
+        "value": "30pt circle"
+      },
+      {
+        "name": "up-next-height",
+        "value": "248pt"
+      },
+      {
+        "name": "tab-item-height",
+        "value": "34pt"
+      },
+      {
+        "name": "progress-line",
+        "value": "2pt, inset 26pt, 3pt from bottom"
+      },
+      {
+        "name": "list-fade",
+        "value": "10pt top, 28pt bottom"
+      }
+    ],
+    "motion": [
+      {
+        "name": "expand-spring",
+        "value": ".spring(response: 0.42, dampingFraction: 0.86)",
+        "purpose": "Pill to drawer height change; pill and drawer contents crossfade."
+      },
+      {
+        "name": "art-morph",
+        "value": "matchedGeometryEffect(id: \"art\")",
+        "purpose": "Artwork travels from the 40pt pill circle to the 232pt drawer square and back."
+      },
+      {
+        "name": "reduce-motion",
+        "value": ".easeInOut(duration: 0.2)",
+        "purpose": "Replaces the expand spring when Reduce Motion is on."
+      },
+      {
+        "name": "tab-switch",
+        "value": ".easeInOut(duration: 0.25)",
+        "purpose": "Tab and Up Next changes; tab plate uses matchedGeometryEffect(id: \"tab\")."
+      },
+      {
+        "name": "artwork-crossfade",
+        "value": ".easeInOut(duration: 0.6)",
+        "purpose": "Artwork tint on track change."
+      },
+      {
+        "name": "symbol-replace",
+        "value": ".contentTransition(.symbolEffect(.replace))",
+        "purpose": "Play/pause glyph swap."
+      },
+      {
+        "name": "numeric-text",
+        "value": ".contentTransition(.numericText())",
+        "purpose": "Scrubber times."
+      },
+      {
+        "name": "waveform-live",
+        "value": ".symbolEffect(.variableColor.iterative, options: .repeating)",
+        "purpose": "Playing track row and ducking label."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Glass Pill",
+      "kind": "custom",
+      "refersTo": "panel-pill",
+      "description": "The collapsed player: one Liquid Glass capsule over the artwork tint, carrying art, title over artist, play/pause and expand. Approximated in CSS; the real material is .glassEffect(.regular).",
+      "html": "<div class=\"ds-ground\"><div class=\"ds-pill\"><div class=\"ds-pill-art\"></div><div class=\"ds-pill-text\"><div class=\"ds-pill-title\">Track Title</div><div class=\"ds-pill-sub\">Artist Name</div></div><button class=\"ds-pp ds-pp-36\" aria-label=\"Pause\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"currentColor\" aria-hidden=\"true\"><rect x=\"3\" y=\"2\" width=\"3\" height=\"10\" rx=\"1\"/><rect x=\"8\" y=\"2\" width=\"3\" height=\"10\" rx=\"1\"/></svg></button><button class=\"ds-glyph ds-glyph-28\" aria-label=\"Expand\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3.5 5.5 7 9l3.5-3.5\"/></svg></button><div class=\"ds-pill-progress\"><span></span></div></div></div>",
+      "css": ".ds-ground { background: linear-gradient(135deg, #5a3a22, #2a1d14); padding: 12px; width: 384px; font-family: -apple-system, 'SF Pro', system-ui; } .ds-pill { position: relative; width: 360px; height: 56px; border-radius: 28px; display: flex; align-items: center; gap: 10px; padding: 0 10px 0 8px; box-sizing: border-box; background: rgba(255,255,255,0.10); backdrop-filter: blur(20px) saturate(1.6); border: 0.5px solid rgba(255,255,255,0.22); color: rgba(255,255,255,0.85); } .ds-pill-art { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #c9772f, #5b2a14); flex: none; } .ds-pill-text { flex: 1; min-width: 0; } .ds-pill-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-pill-sub { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 1px; } .ds-pill-progress { position: absolute; left: 26px; right: 26px; bottom: 3px; height: 2px; border-radius: 1px; background: rgba(255,255,255,0.12); } .ds-pill-progress span { display: block; width: 30%; height: 100%; border-radius: 1px; background: rgba(255,255,255,0.55); } .ds-pp { border: none; border-radius: 50%; background: #0A84FF; color: #fff; display: grid; place-items: center; cursor: pointer; flex: none; } .ds-pp-36 { width: 36px; height: 36px; } .ds-pp:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 2px; } .ds-glyph { border: none; background: transparent; color: rgba(255,255,255,0.85); border-radius: 50%; display: grid; place-items: center; cursor: pointer; flex: none; transition: background 0.15s; } .ds-glyph-28 { width: 28px; height: 28px; } .ds-glyph:hover { background: rgba(255,255,255,0.10); } .ds-glyph:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 1px; }"
+    },
+    {
+      "name": "Play/Pause Button",
+      "kind": "button",
+      "refersTo": "play-pause-drawer",
+      "description": "The only filled control: accent circle with a white glyph at 0.4 of the diameter. 56pt in the drawer, 36pt in the pill, 28pt in the mini player.",
+      "html": "<div class=\"ds-ground2\"><button class=\"ds-pp56\" aria-label=\"Pause\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"currentColor\" aria-hidden=\"true\"><rect x=\"3\" y=\"2\" width=\"3\" height=\"10\" rx=\"1\"/><rect x=\"8\" y=\"2\" width=\"3\" height=\"10\" rx=\"1\"/></svg></button></div>",
+      "css": ".ds-ground2 { background: linear-gradient(135deg, #5a3a22, #2a1d14); padding: 24px; display: inline-block; } .ds-pp56 { width: 56px; height: 56px; border: none; border-radius: 50%; background: #0A84FF; color: #fff; display: grid; place-items: center; cursor: pointer; transition: filter 0.15s; } .ds-pp56 svg { width: 22px; height: 22px; } .ds-pp56:hover { filter: brightness(1.08); } .ds-pp56:active { filter: brightness(0.92); } .ds-pp56:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 3px; } .ds-pp56:disabled { opacity: 0.45; cursor: default; }"
+    },
+    {
+      "name": "Collection Play Button",
+      "kind": "button",
+      "refersTo": "play-collection",
+      "description": "System borderedProminent capsule on a playlist header. The second and last place the accent appears.",
+      "html": "<div class=\"ds-ground2\"><button class=\"ds-btn-play\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M3 1.6v8.8a.6.6 0 0 0 .9.5l7-4.4a.6.6 0 0 0 0-1L3.9 1.1a.6.6 0 0 0-.9.5z\"/></svg><span>Play</span></button></div>",
+      "css": ".ds-ground2 { background: linear-gradient(135deg, #5a3a22, #2a1d14); padding: 24px; display: inline-block; } .ds-btn-play { font-family: -apple-system, 'SF Pro', system-ui; display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 14px; border: none; border-radius: 9999px; background: #0A84FF; color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; } .ds-btn-play:hover { filter: brightness(1.08); } .ds-btn-play:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 2px; }"
+    },
+    {
+      "name": "Glyph Button",
+      "kind": "button",
+      "refersTo": "glyph-button",
+      "description": "Icon-only control drawn on the glass: no chrome at rest, a circular 0.10 fill on hover, 0.20 when toggled on.",
+      "html": "<div class=\"ds-ground2\"><button class=\"ds-gb\" aria-label=\"Collapse\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3.5 5.5 7 9l3.5-3.5\"/></svg></button><button class=\"ds-gb ds-gb-on\" aria-label=\"Hide Up Next\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M5 3.5h7M5 7h7M5 10.5h7\"/><circle cx=\"2.2\" cy=\"3.5\" r=\".6\" fill=\"currentColor\"/><circle cx=\"2.2\" cy=\"7\" r=\".6\" fill=\"currentColor\"/><circle cx=\"2.2\" cy=\"10.5\" r=\".6\" fill=\"currentColor\"/></svg></button></div>",
+      "css": ".ds-ground2 { background: linear-gradient(135deg, #5a3a22, #2a1d14); padding: 24px; display: inline-flex; gap: 12px; } .ds-gb { width: 32px; height: 32px; border: none; border-radius: 50%; background: transparent; color: rgba(255,255,255,0.55); display: grid; place-items: center; cursor: pointer; transition: background 0.15s, color 0.15s; } .ds-gb:first-child { color: rgba(255,255,255,0.85); } .ds-gb:hover { background: rgba(255,255,255,0.10); } .ds-gb-on { background: rgba(255,255,255,0.20); color: rgba(255,255,255,0.85); } .ds-gb:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 1px; }"
+    },
+    {
+      "name": "Tab Capsule",
+      "kind": "nav",
+      "refersTo": "tab-item-selected",
+      "description": "Interactive glass capsule at the bottom of the drawer. The selected tab gets a filled symbol, primary foreground and a 0.14 capsule plate that slides between items.",
+      "html": "<div class=\"ds-ground2\"><nav class=\"ds-tabs\"><button class=\"ds-tab ds-tab-on\" aria-current=\"page\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" aria-hidden=\"true\"><circle cx=\"6\" cy=\"6\" r=\"5.5\" fill=\"currentColor\"/><path d=\"M4.8 3.8v4.4L8.3 6z\" fill=\"#2a1d14\"/></svg>Now Playing</button><button class=\"ds-tab\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.2\" aria-hidden=\"true\"><rect x=\"2\" y=\"3\" width=\"8\" height=\"8\" rx=\"1.5\"/><path d=\"M3.5 1.5h5\"/></svg>Library</button><button class=\"ds-tab\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 13 13\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"5.5\" cy=\"5.5\" r=\"4\"/><path d=\"m8.5 8.5 3.5 3.5\"/></svg>Search</button></nav></div>",
+      "css": ".ds-ground2 { background: linear-gradient(135deg, #5a3a22, #2a1d14); padding: 24px; display: inline-block; } .ds-tabs { font-family: -apple-system, 'SF Pro', system-ui; display: inline-flex; gap: 2px; padding: 4px; border-radius: 9999px; background: rgba(255,255,255,0.08); backdrop-filter: blur(16px); border: 0.5px solid rgba(255,255,255,0.18); } .ds-tab { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: none; border-radius: 9999px; background: transparent; color: rgba(255,255,255,0.55); font-size: 10px; font-weight: 500; cursor: pointer; transition: background 0.25s ease-in-out, color 0.25s ease-in-out; } .ds-tab:hover { color: rgba(255,255,255,0.85); } .ds-tab-on { background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.85); } .ds-tab:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 1px; }"
+    },
+    {
+      "name": "Track Row",
+      "kind": "custom",
+      "refersTo": "track-row",
+      "description": "40pt thumbnail, title over subtitle. Hover shows a 0.07 plate and a trailing play glyph; the playing track is semibold with an animated waveform.",
+      "html": "<div class=\"ds-ground3\"><button class=\"ds-row\"><span class=\"ds-thumb\"></span><span class=\"ds-row-text\"><span class=\"ds-row-title\">Low Tide</span><span class=\"ds-row-sub\">Artist A · 2:10</span></span><span class=\"ds-row-trail\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M3 1.6v8.8a.6.6 0 0 0 .9.5l7-4.4a.6.6 0 0 0 0-1L3.9 1.1a.6.6 0 0 0-.9.5z\"/></svg></span></button><button class=\"ds-row ds-row-current\"><span class=\"ds-thumb\" style=\"background:linear-gradient(135deg,#6fbf5a,#2d5a26)\"></span><span class=\"ds-row-text\"><span class=\"ds-row-title\">Glasshouse</span><span class=\"ds-row-sub\">Artist A · 2:19</span></span><span class=\"ds-row-wave\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M1.5 5v2M4 3v6M6.5 1.5v9M9 3.5v5M11 5v2\"/></svg></span></button></div>",
+      "css": ".ds-ground3 { background: linear-gradient(135deg, #5a3a22, #2a1d14); padding: 12px 10px; width: 340px; font-family: -apple-system, 'SF Pro', system-ui; } .ds-row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 5px 8px; border: none; border-radius: 10px; background: transparent; color: rgba(255,255,255,0.85); text-align: left; cursor: pointer; font: inherit; transition: background 0.12s; } .ds-row:hover { background: rgba(255,255,255,0.07); } .ds-row:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: -2px; } .ds-thumb { width: 40px; height: 40px; border-radius: 6px; flex: none; background: linear-gradient(135deg, #b0603e, #5a2a1a); } .ds-row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; } .ds-row-title { font-size: 12px; } .ds-row-sub { font-size: 10px; color: rgba(255,255,255,0.55); } .ds-row-trail { color: rgba(255,255,255,0.55); opacity: 0; } .ds-row:hover .ds-row-trail { opacity: 1; } .ds-row-current .ds-row-title { font-weight: 600; } .ds-row-wave { color: rgba(255,255,255,0.55); }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "search-field",
+      "description": "Plain text field in a 34pt capsule at 0.08 fill, leading magnifying glass, clear button only when non-empty.",
+      "html": "<div class=\"ds-ground3\"><label class=\"ds-search\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 13 13\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"5.5\" cy=\"5.5\" r=\"4\"/><path d=\"m8.5 8.5 3.5 3.5\"/></svg><input type=\"text\" placeholder=\"Songs, artists\"></label></div>",
+      "css": ".ds-ground3 { background: linear-gradient(135deg, #5a3a22, #2a1d14); padding: 16px; width: 360px; box-sizing: border-box; font-family: -apple-system, 'SF Pro', system-ui; } .ds-search { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 9999px; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); transition: background 0.15s; } .ds-search:focus-within { background: rgba(255,255,255,0.10); box-shadow: 0 0 0 2px rgba(10,132,255,0.5); } .ds-search input { flex: 1; border: none; outline: none; background: transparent; color: rgba(255,255,255,0.85); font: inherit; font-size: 12px; } .ds-search input::placeholder { color: rgba(255,255,255,0.4); }"
+    },
+    {
+      "name": "Duck Badge",
+      "kind": "chip",
+      "refersTo": "duck-badge",
+      "description": "Shown in the drawer header while a dictation app has the mic. Not verified: the ducked state was never captured.",
+      "html": "<div class=\"ds-ground2\"><span class=\"ds-duck\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M1.5 5v2M4 3v6M6.5 1.5v9M9 3.5v5M11 5v2\"/></svg>Lowered for Hex</span></div>",
+      "css": ".ds-ground2 { background: linear-gradient(135deg, #5a3a22, #2a1d14); padding: 24px; display: inline-block; } .ds-duck { font-family: -apple-system, 'SF Pro', system-ui; display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 10px; border-radius: 9999px; background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.85); font-size: 10px; font-weight: 500; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Pill Is the Player",
+    "overview": "Encore is one piece of Liquid Glass hanging under the menu bar. At rest it is a 56pt capsule carrying the artwork, the title over the artist, a play/pause button and an expand chevron. Expanding does not open another window: the same glass shape grows downward into a 620pt drawer, and the artwork moves with it, from a 40pt circle in the pill to a large rounded square in the drawer. Collapsing runs the same movement in reverse.\n\nThe ground under the glass belongs to the music. The current cover, blurred and laid at half opacity under the panel, gives the whole player that cover's colour, so the palette changes with every track and the chrome brings no colour of its own. The one fixed colour is the system accent, and it appears only on controls that start playback. Everything else is drawn in hierarchical system foregrounds (primary, secondary, tertiary) and a short ladder of translucent primary fills. Type is SF Pro at macOS system text styles, and every icon is an SF Symbol.\n\nThe density is that of a menu bar utility: small, close, and quick to dismiss. There is no YouTube or YouTube Music branding anywhere in the chrome. Liked Songs uses Encore's own heart tile instead of the service's artwork.",
+    "keyCharacteristics": [
+      "One continuous glass shape, 360pt wide, in two heights: pill (56pt) and drawer (620pt).",
+      "The artwork tints the panel. The chrome adds no colour except the accent.",
+      "The accent fills play controls and nothing else.",
+      "SF Pro system text styles and SF Symbols only. Hierarchy comes from weight and from the primary, secondary and tertiary foregrounds, never from new colours.",
+      "Icon-only controls have no chrome at rest. They show a soft circular fill on hover.",
+      "Scrolling lists fade out at their top and bottom edges instead of being cut off by the frame."
+    ],
+    "rules": [
+      {
+        "name": "The Accent Means Play Rule",
+        "body": "The accent appears only on controls that start or pause playback: the play/pause circle and a collection's Play button. Navigation, selection, sliders and toggles use the primary foreground. Sliders are tinted `.primary`, and the selected tab is a primary fill, never the accent.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cover Owns the Colour Rule",
+        "body": "The chrome adds no hue of its own. Panel colour comes from the artwork tint under the glass, and every overlay is a primary-foreground opacity from the fill ladder, so the panel stays readable against any cover.",
+        "section": "colors"
+      },
+      {
+        "name": "The System Styles Rule",
+        "body": "Set type with system text styles (`.title3`, `.headline`, `.callout`, `.subheadline`, `.caption`, `.caption2`) and weights. Never use fixed point sizes, except for SF Symbols sized relative to their control (the play glyph is 0.4 of the button diameter).",
+        "section": "typography"
+      },
+      {
+        "name": "The Numbers Hold Still Rule",
+        "body": "Any number that changes while you watch it (times, percentages) uses monospaced digits.",
+        "section": "typography"
+      },
+      {
+        "name": "The Two Glasses Rule",
+        "body": "There are exactly two glass surfaces: the panel itself and the tab capsule. Rows, fields, badges and buttons are opacity fills on the panel's glass, never glass of their own.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep the panel at 360pt wide, 56pt as a pill and 620pt as a drawer, with a 28pt corner radius, inside a 12pt margin.",
+      "Do put new drawer content inside the existing glass, using fills from the ladder (0.06 to 0.20) for plates, fields and selection.",
+      "Do use the accent only for controls that start or pause playback, with a white glyph.",
+      "Do build icon controls as Glyph Buttons: an SF Symbol, a circular hit area, a 0.10 hover fill, a `.help` tooltip and an accessibility label.",
+      "Do fade scrolling lists at their edges and hide their scroll indicators.",
+      "Do use SwiftUI system text styles and monospaced digits for changing numbers.",
+      "Do keep the expand spring at response 0.42 / damping 0.86 and provide the Reduce Motion ease-in-out.",
+      "Do check the light appearance and the ducked state against real captures before relying on them. Neither has been verified."
+    ],
+    "donts": [
+      "Don't use the accent for selection, sliders, links or navigation. Those use `.primary`.",
+      "Don't add YouTube or YouTube Music logos or brand colours to the chrome.",
+      "Don't add new glass layers for rows, cards or buttons. The panel and the tab capsule are the only glass.",
+      "Don't open a separate window or popover for player content. It grows inside the drawer.",
+      "Don't introduce fixed brand colours. The artwork tint supplies the panel's colour."
+    ]
+  }
+}

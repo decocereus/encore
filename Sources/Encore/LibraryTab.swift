@@ -160,14 +160,17 @@ private struct LikedTile: View {
     let cornerRadius: CGFloat
 
     var body: some View {
-        RoundedRectangle(cornerRadius: cornerRadius)
-            .fill(.primary.opacity(0.12))
-            .overlay {
-                Image(systemName: "heart.fill")
-                    .font(.title3)
-                    .foregroundStyle(.primary.opacity(0.85))
-            }
-            .accessibilityHidden(true)
+        GeometryReader { proxy in
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .fill(.primary.opacity(0.2))
+                .strokeBorder(.primary.opacity(0.15), lineWidth: 0.5)
+                .overlay {
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: proxy.size.width * 0.4, weight: .medium))
+                        .foregroundStyle(.primary.opacity(0.9))
+                }
+        }
+        .accessibilityHidden(true)
     }
 }
 
