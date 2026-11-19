@@ -43,12 +43,7 @@ struct NowPlayingTab: View {
                 }
 
                 HStack(spacing: 8) {
-                    Image(systemName: "speaker.fill").font(.caption2).foregroundStyle(.secondary)
-                    Slider(value: Binding(get: { player.state.volume }, set: { player.setVolume($0) }), in: 0...100)
-                        .controlSize(.mini)
-                        .tint(.primary)
-                        .accessibilityLabel("Volume")
-                    Image(systemName: "speaker.wave.3.fill").font(.caption2).foregroundStyle(.secondary)
+                    VolumeSlider(player: player)
                     GlyphButton(symbol: "list.bullet", label: model.showQueue ? "Hide Up Next" : "Up Next",
                                 size: 30, font: .callout.weight(.semibold)) {
                         model.showQueue.toggle()

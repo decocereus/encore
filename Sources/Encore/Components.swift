@@ -97,6 +97,22 @@ struct PlayPauseButton: View {
     }
 }
 
+/// The player's own volume (ducking never moves it), between quiet and loud speaker glyphs.
+struct VolumeSlider: View {
+    let player: PlayerController
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "speaker.fill").font(.caption2).foregroundStyle(.secondary)
+            Slider(value: Binding(get: { player.state.volume }, set: { player.setVolume($0) }), in: 0...100)
+                .controlSize(.mini)
+                .tint(.primary)
+                .accessibilityLabel("Volume")
+            Image(systemName: "speaker.wave.3.fill").font(.caption2).foregroundStyle(.secondary)
+        }
+    }
+}
+
 /// Icon-only control drawn on the glass: no chrome of its own, a soft fill on hover.
 struct GlyphButton: View {
     let symbol: String

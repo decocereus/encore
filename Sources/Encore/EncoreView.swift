@@ -2,7 +2,7 @@ import SwiftUI
 
 enum PanelMetrics {
     static let width: CGFloat = 360
-    static let pillHeight: CGFloat = 56
+    static let pillHeight: CGFloat = 104
     static let drawerHeight: CGFloat = 620
     static let radius: CGFloat = 28
     /// Room around the shape for the glass edge and shadow.
@@ -50,6 +50,7 @@ private struct Pill: View {
     var body: some View {
         let player = model.player
         let state = player.state
+        VStack(spacing: 6) {
         HStack(spacing: 10) {
             RemoteImage(url: state.artURL, cornerRadius: 20)
                 .matchedGeometryEffect(id: "art", in: namespace)
@@ -74,14 +75,26 @@ private struct Pill: View {
 
             Spacer(minLength: 4)
 
-            PlayPauseButton(player: player, size: 36)
             GlyphButton(symbol: "chevron.down", label: "Expand", size: 28, font: .callout.weight(.semibold)) {
                 model.expanded = true
             }
         }
+
+        HStack(spacing: 6) {
+            VolumeSlider(player: player)
+                .frame(width: 132)
+            Spacer(minLength: 8)
+            GlyphButton(symbol: "backward.fill", label: "Previous", size: 32, font: .callout, action: player.previous)
+            PlayPauseButton(player: player, size: 36)
+            GlyphButton(symbol: "forward.fill", label: "Next", size: 32, font: .callout, action: player.next)
+        }
+        .disabled(!state.hasTrack)
+        }
         .padding(.leading, 8)
         .padding(.trailing, 10)
-        .frame(height: PanelMetrics.pillHeight)
+        .padding(.top, 8)
+        .padding(.bottom, 10)
+        .frame(height: PanelMetrics.pillHeight, alignment: .top)
         .overlay(alignment: .bottom) {
             if state.hasTrack {
                 ProgressLine(player: player).padding(.horizontal, 26).padding(.bottom, 3)
