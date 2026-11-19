@@ -1,3 +1,4 @@
+import CoreImage
 import SwiftUI
 
 struct RemoteImage: View {
@@ -38,6 +39,18 @@ struct ArtworkTint: View {
         .animation(.easeInOut(duration: 0.6), value: url)
         .allowsHitTesting(false)
     }
+}
+
+/// The cover's average colour, for tinting the glass.
+func averageColor(of url: URL?) async -> Color? {
+    guard let url, let (data, _) = try? await URLSession.shared.data(from: url),
+          let image = CIImage(data: data) else { return nil }
+    let filter = CIFilter(name: "CIAreaAverage", parameters: [kCIInputImageKey: image, kCIInputExtentKey: CIVector(cgRect: image.extent)])
+    guard let output = filter?.outputImage else { return nil }
+    var pixel = [UInt8](repeating: 0, count: 4)
+    CIContext(options: [.workingColorSpace: NSNull()])
+        .render(output, toBitmap: &pixel, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: nil)
+    return Color(red: Double(pixel[0]) / 255, green: Double(pixel[1]) / 255, blue: Double(pixel[2]) / 255)
 }
 
 struct TrackRow: View {
@@ -169,23 +182,33 @@ struct Scrubber: View {
     }
 }
 
-/// A hairline of progress along the bottom of the compact pill.
-struct ProgressLine: View {
+/// The pill's seek bar: elapsed time, a mini slider, and the track length on one line.
+struct CompactScrubber: View {
     let player: PlayerController
+    @State private var dragging: Double?
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 1)) { context in
+        TimelineView(.periodic(from: .now, by: 0.5)) { context in
             let state = player.state
-            let fraction = state.duration > 0 ? state.position(at: context.date) / state.duration : 0
-            GeometryReader { proxy in
-                Capsule().fill(.primary.opacity(0.12))
-                    .overlay(alignment: .leading) {
-                        Capsule().fill(.primary.opacity(0.55)).frame(width: proxy.size.width * fraction)
+            let position = dragging ?? state.position(at: context.date)
+            HStack(spacing: 8) {
+                Text(formatTime(position)).frame(width: 34, alignment: .trailing)
+                Slider(value: Binding(get: { position }, set: { dragging = $0 }),
+                       in: 0...max(state.duration, 1)) { editing in
+                    if !editing, let target = dragging {
+                        player.seek(to: target)
+                        dragging = nil
                     }
+                }
+                .controlSize(.mini)
+                .tint(.primary)
+                .accessibilityLabel("Playback position")
+                Text(formatTime(state.duration)).frame(width: 34, alignment: .leading)
             }
-            .frame(height: 2)
+            .font(.caption2.monospacedDigit())
+            .foregroundStyle(.secondary)
+            .disabled(!state.hasTrack)
         }
-        .accessibilityHidden(true)
     }
 }
 

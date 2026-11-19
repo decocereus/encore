@@ -3,10 +3,18 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
     let model: AppModel
+    @AppStorage("shellGlass") private var shellGlass = ShellGlass.artwork
 
     var body: some View {
         @Bindable var ducking = model.ducking
         Form {
+            Section("Appearance") {
+                Picker("Glass", selection: $shellGlass) {
+                    ForEach(ShellGlass.allCases) { Text($0.title).tag($0) }
+                }
+                .pickerStyle(.radioGroup)
+            }
+
             Section {
                 Toggle("Lower music while dictating", isOn: $ducking.enabled)
                 LabeledContent("Volume while dictating") {

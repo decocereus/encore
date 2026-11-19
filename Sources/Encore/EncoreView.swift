@@ -2,7 +2,7 @@ import SwiftUI
 
 enum PanelMetrics {
     static let width: CGFloat = 360
-    static let pillHeight: CGFloat = 104
+    static let pillHeight: CGFloat = 128
     static let drawerHeight: CGFloat = 620
     static let radius: CGFloat = 28
     /// Room around the shape for the glass edge and shadow.
@@ -14,6 +14,8 @@ struct EncoreView: View {
     let model: AppModel
     @Namespace private var namespace
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @AppStorage("shellGlass") private var shellGlass = ShellGlass.artwork
+    @State private var artColor: Color?
 
     var body: some View {
         let state = model.player.state
@@ -29,15 +31,47 @@ struct EncoreView: View {
         .frame(width: PanelMetrics.width,
                height: model.expanded ? PanelMetrics.drawerHeight : PanelMetrics.pillHeight,
                alignment: .top)
-        .background { ArtworkTint(url: state.artURL) }
+        .background { if shellGlass == .artwork { ArtworkTint(url: state.artURL) } }
         .clipShape(.rect(cornerRadius: PanelMetrics.radius))
-        .glassEffect(.regular, in: .rect(cornerRadius: PanelMetrics.radius))
+        .glassEffect(shellGlass.glass(tint: artColor), in: .rect(cornerRadius: PanelMetrics.radius))
+        .task(id: state.artURL) { artColor = await averageColor(of: state.artURL) }
         .padding(PanelMetrics.margin)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(response: 0.42, dampingFraction: 0.86),
                    value: model.expanded)
         .animation(.easeInOut(duration: 0.25), value: model.tab)
         .animation(.easeInOut(duration: 0.25), value: model.showQueue)
+    }
+}
+
+/// How the panel's Liquid Glass is drawn.
+enum ShellGlass: String, CaseIterable, Identifiable {
+    /// Regular glass over the blurred cover art.
+    case artwork
+    /// Regular glass only: the desktop shows through, frosted.
+    case regular
+    /// Clear glass: the most see-through variant.
+    case clear
+    /// Regular glass tinted with the cover's average colour.
+    case tinted
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .artwork: "Cover art"
+        case .regular: "Frosted"
+        case .clear: "Clear"
+        case .tinted: "Cover colour"
+        }
+    }
+
+    func glass(tint: Color?) -> Glass {
+        switch self {
+        case .artwork, .regular: .regular
+        case .clear: .clear
+        case .tinted: .regular.tint(tint?.opacity(0.35))
+        }
     }
 }
 
@@ -51,57 +85,55 @@ private struct Pill: View {
         let player = model.player
         let state = player.state
         VStack(spacing: 6) {
-        HStack(spacing: 10) {
-            RemoteImage(url: state.artURL, cornerRadius: 20)
-                .matchedGeometryEffect(id: "art", in: namespace)
-                .frame(width: 40, height: 40)
+            HStack(spacing: 10) {
+                RemoteImage(url: state.artURL, cornerRadius: 20)
+                    .matchedGeometryEffect(id: "art", in: namespace)
+                    .frame(width: 40, height: 40)
 
-            VStack(alignment: .leading, spacing: 1) {
-                Text(state.hasTrack ? state.title : "Nothing playing")
-                    .font(.callout.weight(.semibold))
-                    .lineLimit(1)
-                Group {
-                    if let app = model.duckedFor {
-                        Label("Lowered for \(app)", systemImage: "waveform")
-                            .symbolEffect(.variableColor.iterative, options: .repeating)
-                    } else {
-                        Text(state.hasTrack ? state.artist : "Open to browse your library")
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(state.hasTrack ? state.title : "Nothing playing")
+                        .font(.callout.weight(.semibold))
+                        .lineLimit(1)
+                    Group {
+                        if let app = model.duckedFor {
+                            Label("Lowered for \(app)", systemImage: "waveform")
+                                .symbolEffect(.variableColor.iterative, options: .repeating)
+                        } else {
+                            Text(state.hasTrack ? state.artist : "Open to browse your library")
+                        }
                     }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
+
+                Spacer(minLength: 4)
+
+                GlyphButton(symbol: "chevron.down", label: "Expand", size: 28, font: .callout.weight(.semibold)) {
+                    model.expanded = true
+                }
             }
+            // Only the track row expands on click; the sliders below need their clicks.
+            .contentShape(.rect)
+            .onTapGesture { model.expanded = true }
 
-            Spacer(minLength: 4)
+            CompactScrubber(player: player)
+                .padding(.horizontal, 4)
 
-            GlyphButton(symbol: "chevron.down", label: "Expand", size: 28, font: .callout.weight(.semibold)) {
-                model.expanded = true
+            HStack(spacing: 6) {
+                VolumeSlider(player: player)
+                    .frame(width: 132)
+                Spacer(minLength: 8)
+                GlyphButton(symbol: "backward.fill", label: "Previous", size: 32, font: .callout, action: player.previous)
+                PlayPauseButton(player: player, size: 36)
+                GlyphButton(symbol: "forward.fill", label: "Next", size: 32, font: .callout, action: player.next)
             }
-        }
-
-        HStack(spacing: 6) {
-            VolumeSlider(player: player)
-                .frame(width: 132)
-            Spacer(minLength: 8)
-            GlyphButton(symbol: "backward.fill", label: "Previous", size: 32, font: .callout, action: player.previous)
-            PlayPauseButton(player: player, size: 36)
-            GlyphButton(symbol: "forward.fill", label: "Next", size: 32, font: .callout, action: player.next)
-        }
-        .disabled(!state.hasTrack)
         }
         .padding(.leading, 8)
         .padding(.trailing, 10)
         .padding(.top, 8)
-        .padding(.bottom, 10)
+        .padding(.bottom, 8)
         .frame(height: PanelMetrics.pillHeight, alignment: .top)
-        .overlay(alignment: .bottom) {
-            if state.hasTrack {
-                ProgressLine(player: player).padding(.horizontal, 26).padding(.bottom, 3)
-            }
-        }
-        .contentShape(.rect)
-        .onTapGesture { model.expanded = true }
         .contextMenu { PlayerMenu(model: model) }
     }
 }
