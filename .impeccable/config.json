@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/two-pane.html"
+        ],
+        "createdAt": "2026-11-19T10:55:50.885Z",
+        "reason": "agent: throwaway decision sketch rendered as a skeleton; not shipped UI"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/pill-drawer.html"
+        ],
+        "createdAt": "2026-11-19T10:55:50.905Z",
+        "reason": "agent: throwaway decision sketch rendered as a skeleton; not shipped UI"
+      }
+    ]
+  }
+}
