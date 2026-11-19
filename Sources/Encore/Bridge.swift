@@ -246,10 +246,6 @@ let bridgeScript = #"""
       const endpoint = { watchEndpoint: videoId ? { videoId, playlistId } : { playlistId } };
       if (app) app.dispatchEvent(new CustomEvent('yt-navigate', { bubbles: true, composed: true, detail: { endpoint } }));
     },
-    async home() {
-      const json = await innertube('browse', { browseId: 'FEmusic_home' });
-      return twoRowItems(json).map(toCollection).filter(c => c && c.id.startsWith('VL'));
-    },
     async search(query) {
       const json = await innertube('search', { query, params: SONGS_FILTER });
       return listItems(json).map(toTrack).filter(Boolean).slice(0, 30);

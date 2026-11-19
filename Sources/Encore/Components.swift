@@ -1,4 +1,3 @@
-import CoreImage
 import SwiftUI
 
 struct RemoteImage: View {
@@ -21,36 +20,6 @@ struct RemoteImage: View {
             .clipShape(.rect(cornerRadius: cornerRadius))
             .accessibilityHidden(true)
     }
-}
-
-/// The current artwork, blurred, laid under the panel's glass so the whole player takes on the cover's colour.
-struct ArtworkTint: View {
-    let url: URL?
-
-    var body: some View {
-        AsyncImage(url: url) { phase in
-            if let image = phase.image {
-                image.resizable().scaledToFill()
-                    .blur(radius: 40)
-                    .opacity(0.5)
-                    .transition(.opacity)
-            }
-        }
-        .animation(.easeInOut(duration: 0.6), value: url)
-        .allowsHitTesting(false)
-    }
-}
-
-/// The cover's average colour, for tinting the glass.
-func averageColor(of url: URL?) async -> Color? {
-    guard let url, let (data, _) = try? await URLSession.shared.data(from: url),
-          let image = CIImage(data: data) else { return nil }
-    let filter = CIFilter(name: "CIAreaAverage", parameters: [kCIInputImageKey: image, kCIInputExtentKey: CIVector(cgRect: image.extent)])
-    guard let output = filter?.outputImage else { return nil }
-    var pixel = [UInt8](repeating: 0, count: 4)
-    CIContext(options: [.workingColorSpace: NSNull()])
-        .render(output, toBitmap: &pixel, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBA8, colorSpace: nil)
-    return Color(red: Double(pixel[0]) / 255, green: Double(pixel[1]) / 255, blue: Double(pixel[2]) / 255)
 }
 
 struct TrackRow: View {

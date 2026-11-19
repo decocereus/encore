@@ -79,8 +79,8 @@ components:
   panel-pill:
     rounded: "{rounded.panel}"
     width: "360px"
-    height: "56px"
-    padding: "0 10px 0 8px"
+    height: "128px"
+    padding: "8px 10px 8px 8px"
   panel-drawer:
     rounded: "{rounded.panel}"
     width: "360px"
@@ -174,15 +174,15 @@ components:
 
 **Creative North Star: "The Pill Is the Player"**
 
-Encore is one piece of Liquid Glass hanging under the menu bar. At rest it is a 56pt capsule carrying the artwork, the title over the artist, a play/pause button and an expand chevron. Expanding does not open another window: the same glass shape grows downward into a 620pt drawer, and the artwork moves with it, from a 40pt circle in the pill to a large rounded square in the drawer. Collapsing runs the same movement in reverse.
+Encore is one piece of Liquid Glass hanging under the menu bar. At rest it is a 128pt compact player in three rows: the artwork with the title over the artist and an expand chevron, a seek bar, then volume beside previous, play/pause and next. Expanding does not open another window: the same glass shape grows downward into a 620pt drawer, and the artwork moves with it, from a 40pt circle in the pill to a large rounded square in the drawer. Collapsing runs the same movement in reverse.
 
-The ground under the glass belongs to the music. The current cover, blurred and laid at half opacity under the panel, gives the whole player that cover's colour, so the palette changes with every track and the chrome brings no colour of its own. The one fixed colour is the system accent, and it appears only on controls that start playback. Everything else is drawn in hierarchical system foregrounds (primary, secondary, tertiary) and a short ladder of translucent primary fills. Type is SF Pro at macOS system text styles, and every icon is an SF Symbol.
+The glass is frosted Liquid Glass with nothing painted under it, so the desktop shows through, blurred. The artwork itself is the only colour that changes with the track, and the chrome brings no colour of its own. The one fixed colour is the system accent, and it appears only on controls that start playback. Everything else is drawn in hierarchical system foregrounds (primary, secondary, tertiary) and a short ladder of translucent primary fills. Type is SF Pro at macOS system text styles, and every icon is an SF Symbol.
 
 The density is that of a menu bar utility: small, close, and quick to dismiss. There is no YouTube or YouTube Music branding anywhere in the chrome. Liked Songs uses Encore's own heart tile instead of the service's artwork.
 
 **Key Characteristics:**
-- One continuous glass shape, 360pt wide, in two heights: pill (56pt) and drawer (620pt).
-- The artwork tints the panel. The chrome adds no colour except the accent.
+- One continuous glass shape, 360pt wide, in two heights: pill (128pt) and drawer (620pt).
+- Frosted glass over the desktop. The chrome adds no colour except the accent.
 - The accent fills play controls and nothing else.
 - SF Pro system text styles and SF Symbols only. Hierarchy comes from weight and from the primary, secondary and tertiary foregrounds, never from new colours.
 - Icon-only controls have no chrome at rest. They show a soft circular fill on hover.
@@ -190,24 +190,21 @@ The density is that of a menu bar utility: small, close, and quick to dismiss. T
 
 ## Colors
 
-The panel takes its colour from the current artwork. The system adds one accent and a set of translucent neutrals that sit on top of whatever the cover provides. Values in the frontmatter are the dark-appearance resolutions of SwiftUI semantic styles; the source refers to the styles, not to the hex values.
+The chrome is colourless: plain frosted glass, one accent, and a set of translucent neutrals that sit on whatever the desktop shows through. Values in the frontmatter are the dark-appearance resolutions of SwiftUI semantic styles; the source refers to the styles, not to the hex values. The light appearance has never been captured, so its legibility on the glass is unverified.
 
 ### Primary
 - **System Accent** (`Color.accentColor`): fills the play/pause circle at every size (28, 36, 56pt) and the capsule Play button on a playlist. The glyph on it is always white. Because it is the user's own System Settings accent, Encore never hard-codes the hue. Captures render it as system blue, slightly deeper where it sits on glass.
-
-### Tertiary
 
 ### Neutral
 - **Label** (`.primary`): track titles, the selected tab, active glyphs.
 - **Secondary Label** (`.secondary`): artists, subtitles, times, unselected tabs, empty-state copy, the volume speaker icons.
 - **Tertiary Label** (`.tertiary`): disclosure chevrons on rows and the placeholder note in an artwork that hasn't loaded.
-- **Fill ladder** (`.primary.opacity(...)`): rest 0.06 (empty-state icon well, source row at rest), hover 0.07 (track and playlist row hover), field 0.08 (search capsule), control 0.10 (glyph hover, duck badge, source row hover), selected 0.14 (tab selection), on 0.20 (Up Next toggle when on, Liked Songs tile). The progress line uses 0.12 for its track and 0.55 for its fill.
-- **Artwork Tint**: the current cover, blurred at radius 40 and set to 0.5 opacity under the glass. It crossfades over 0.6s when the track changes.
+- **Fill ladder** (`.primary.opacity(...)`): rest 0.06 (empty-state icon well, source row at rest), hover 0.07 (track and playlist row hover), field 0.08 (search capsule), control 0.10 (glyph hover, duck badge, source row hover), selected 0.14 (tab selection), on 0.20 (Up Next toggle when on, Liked Songs tile).
 
 ### Named Rules
 **The Accent Means Play Rule.** The accent appears only on controls that start or pause playback: the play/pause circle and a collection's Play button. Navigation, selection, sliders and toggles use the primary foreground. Sliders are tinted `.primary`, and the selected tab is a primary fill, never the accent.
 
-**The Cover Owns the Colour Rule.** The chrome adds no hue of its own. Panel colour comes from the artwork tint under the glass, and every overlay is a primary-foreground opacity from the fill ladder, so the panel stays readable against any cover.
+**The No Painted Colour Rule.** The chrome adds no hue of its own. The panel is plain frosted glass, and every overlay is a primary-foreground opacity from the fill ladder, so the panel stays readable over any desktop.
 
 ## Typography
 
@@ -225,7 +222,7 @@ The panel takes its colour from the current artwork. The system adds one accent 
 - **Subheadline** (subheadline): artist · album under the drawer title. In semibold it marks list sections ("Up Next", "Playlists").
 - **Label** (caption, medium): tab labels and the duck badge.
 - **Caption** (caption / caption2): row subtitles, the pill's artist line, the mini player.
-- **Time** (caption2, monospaced digits): elapsed and remaining time under the scrubber, animated with `.numericText()`.
+- **Time** (caption2, monospaced digits): elapsed and remaining time under the drawer scrubber, animated with `.numericText()`, and elapsed time and track length either side of the pill's seek bar (no numeric transition).
 
 ### Named Rules
 **The System Styles Rule.** Set type with system text styles (`.title3`, `.headline`, `.callout`, `.subheadline`, `.caption`, `.caption2`) and weights. Never use fixed point sizes, except for SF Symbols sized relative to their control (the play glyph is 0.4 of the button diameter).
@@ -234,9 +231,12 @@ The panel takes its colour from the current artwork. The system adds one accent 
 
 ## Layout
 
-The panel has a fixed width of 360pt and two fixed heights: pill 56pt and drawer 620pt. It sits inside a 12pt margin that leaves room for the glass edge. Nothing in it reflows; the expanded/collapsed state is the only layout change.
+The panel has a fixed width of 360pt and two fixed heights: pill 128pt and drawer 620pt. It sits inside a 12pt margin that leaves room for the glass edge. Nothing in it reflows; the expanded/collapsed state is the only layout change.
 
-- **Pill:** a horizontal stack with 10pt spacing and asymmetric insets (8pt leading, 10pt trailing): a 40pt circular artwork, title over artist (1pt gap), a flexible spacer, a 36pt play/pause button and a 28pt expand chevron. A 2pt progress line runs along the bottom edge, inset 26pt on each side and lifted 3pt. Clicking anywhere on the pill expands it.
+- **Pill:** three rows with 6pt spacing, inset 8pt top and bottom, 8pt leading and 10pt trailing.
+  - **Track row:** a 40pt circular artwork, title over artist (1pt gap), a flexible spacer and a 28pt expand chevron, 10pt apart. Clicking this row expands the drawer; the two rows below keep their clicks for the sliders and buttons.
+  - **Seek row:** elapsed time, a mini seek slider, and the track length, in caption2 monospaced digits, with 8pt spacing and a further 4pt horizontal inset.
+  - **Controls row:** a 132pt volume slider, a flexible spacer, then 32pt previous, a 36pt play/pause and 32pt next, 6pt apart.
 - **Drawer:** a 52pt header (account menu or Back on the left, the collapse chevron on the right, and between them the mini now-playing or the duck badge), then the tab content, then the tab capsule with 6pt above and 12pt below.
 - **Now Playing:** a vertical stack with 14pt spacing. It holds the artwork (232pt, with 8pt vertical padding), the title block, the scrubber, the transport (28pt between previous, play and next), and a volume row with an Up Next toggle. Text, scrubber and volume rows sit in a 24pt gutter. Up Next replaces the artwork in the same slot, at 248pt tall.
 - **Lists:** rows sit inside 10pt horizontal list padding. Section labels align at 18pt, which matches the row content edge (10pt list padding plus 8pt row padding). Rows stack with no gap. Lists hide their scroll indicators and fade their edges (10pt at the top, 28pt at the bottom) so rows pass under the tab capsule.
@@ -245,7 +245,7 @@ The panel has a fixed width of 360pt and two fixed heights: pill 56pt and drawer
 
 ## Elevation & Depth
 
-Depth comes from material. There is no shadow vocabulary. The panel is a single `.glassEffect(.regular)` over the artwork tint. The hosting panel turns its window shadow off and leaves the edge to the glass. The tab capsule is a second, interactive glass layer (`.regular.interactive()`) that floats over the scrolling content. Everything else is flat on the glass and separated only by fill opacity.
+Depth comes from material. There is no shadow vocabulary. The panel is a single `.glassEffect(.regular)` with nothing painted under it. The hosting panel turns its window shadow off and leaves the edge to the glass. The tab capsule is a second, interactive glass layer (`.regular.interactive()`) that floats over the scrolling content. Everything else is flat on the glass and separated only by fill opacity.
 
 ### Shadow Vocabulary
 - **Artwork lift** (`.shadow(color: .black.opacity(0.3), radius: 16, y: 8)`): used only on the large drawer artwork, so the cover reads as an object resting on the glass.
@@ -255,7 +255,7 @@ Depth comes from material. There is no shadow vocabulary. The panel is a single 
 
 ## Shapes
 
-The form language is continuous curves and capsules. The panel's 28pt corner radius is exactly half the pill height, so the collapsed pill is a true capsule, and the drawer is the same shape with straight sides added. Corner radii scale with the size of the element: the 232pt artwork uses 18pt, the 96pt empty-state well 22pt, the 76pt playlist header tile and the 48pt rows' hover plate 12pt, track-row hover plates 10pt, playlist thumbnails 8pt, track thumbnails 6pt. Artwork in the pill (40pt) and the mini player (30pt) is fully circular. Every control capsule (tabs, search field, duck badge, Play button) and every round control (play/pause, glyph hover) is a capsule or a circle. The Liked Songs tile uses a 0.5pt primary stroke at 0.15, the only stroke in the system.
+The form language is continuous curves and capsules. The panel is a continuous rounded rectangle with a 28pt corner radius at both heights: the 128pt pill and the 620pt drawer are the same shape, only taller. Corner radii scale with the size of the element: the 232pt artwork uses 18pt, the 96pt empty-state well 22pt, the 76pt playlist header tile and the 48pt rows' hover plate 12pt, track-row hover plates 10pt, playlist thumbnails 8pt, track thumbnails 6pt. Artwork in the pill (40pt) and the mini player (30pt) is fully circular. Every control capsule (tabs, search field, duck badge, Play button) and every round control (play/pause, glyph hover) is a capsule or a circle. The Liked Songs tile uses a 0.5pt primary stroke at 0.15, the only stroke in the system.
 
 ## Components
 
@@ -270,7 +270,7 @@ The only filled button in the panel.
 
 ### Glyph Button
 An icon-only control drawn directly on the glass.
-- **Shape:** circular hit area. Sizes: 28pt (pill chevron), 30pt (Up Next), 32pt (header), 44pt (previous and next).
+- **Shape:** circular hit area. Sizes: 28pt (pill chevron), 30pt (Up Next), 32pt (header, and previous and next in the pill), 44pt (previous and next in the drawer).
 - **Rest:** an SF Symbol with no background.
 - **Hover:** a circular fill at control opacity (0.10).
 - **Toggle on (Up Next):** a circular fill at 0.20 and the primary foreground. When off it uses secondary.
@@ -292,10 +292,10 @@ An icon-only control drawn directly on the glass.
 ### Search Field
 - A plain `TextField` inside a 34pt capsule at 0.08 fill, with a leading secondary magnifying glass and a trailing clear button that appears only when there is text. 12pt inner padding and 16pt outer inset. It takes focus when the tab appears. Results dim to 0.6 while a new search runs.
 
-### Scrubber and Progress Line
+### Scrubbers
 - **Scrubber (drawer):** a small system `Slider` tinted `.primary`, with times below in caption2 monospaced digits. Remaining time is shown with a leading minus. It seeks on release, not while dragging.
-- **Volume:** a mini system `Slider` tinted `.primary`, between secondary speaker glyphs.
-- **Progress line (pill):** a 2pt capsule, with its track at 0.12 and its fill at 0.55 primary. It is decorative and hidden from accessibility.
+- **Volume:** one shared component, a mini system `Slider` tinted `.primary` between secondary caption2 speaker glyphs (8pt apart). It is 132pt wide in the pill's controls row and fills the volume row in Now Playing. It sets the player's own volume; ducking never moves it.
+- **Compact scrubber (pill):** a mini system `Slider` tinted `.primary`, between the elapsed time and the track length (34pt each, caption2 monospaced digits, secondary). It also seeks on release, and is disabled with no track loaded.
 
 ### Duck Badge
 - A 24pt capsule at 0.10 fill, with 10pt horizontal padding and a caption-medium `waveform` label that reads "Lowered for {app}", animated with `.variableColor.iterative`. It replaces the mini player in the drawer header. In the pill the same label replaces the artist line. **Not verified:** the ducked state was never captured. Its layout and legibility come from source only.
@@ -312,13 +312,12 @@ An icon-only control drawn directly on the glass.
 - **The art morph:** the artwork shares the matched geometry id "art" between the 40pt circle in the pill and the 232pt rounded square in the drawer, so it travels and reshapes along with the panel.
 - **Reduce Motion:** the spring is replaced by a 0.2s ease-in-out.
 - **Tab and Up Next switches:** a 0.25s ease-in-out. The tab selection plate moves with matched geometry.
-- **Artwork tint:** a 0.6s crossfade when the cover changes.
 - **Symbols:** `.replace` for play/pause, `.numericText()` for times, and `.variableColor.iterative` on the playing-track and ducking waveforms.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** keep the panel at 360pt wide, 56pt as a pill and 620pt as a drawer, with a 28pt corner radius, inside a 12pt margin.
+- **Do** keep the panel at 360pt wide, 128pt as a pill and 620pt as a drawer, with a 28pt corner radius, inside a 12pt margin.
 - **Do** put new drawer content inside the existing glass, using fills from the ladder (0.06 to 0.20) for plates, fields and selection.
 - **Do** use the accent only for controls that start or pause playback, with a white glyph.
 - **Do** build icon controls as Glyph Buttons: an SF Symbol, a circular hit area, a 0.10 hover fill, a `.help` tooltip and an accessibility label.
@@ -332,4 +331,4 @@ An icon-only control drawn directly on the glass.
 - **Don't** add YouTube or YouTube Music logos or brand colours to the chrome.
 - **Don't** add new glass layers for rows, cards or buttons. The panel and the tab capsule are the only glass.
 - **Don't** open a separate window or popover for player content. It grows inside the drawer.
-- **Don't** introduce fixed brand colours. The artwork tint supplies the panel's colour.
+- **Don't** introduce fixed brand colours or paint a ground under the glass.

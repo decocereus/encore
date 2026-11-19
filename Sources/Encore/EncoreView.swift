@@ -14,11 +14,8 @@ struct EncoreView: View {
     let model: AppModel
     @Namespace private var namespace
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @AppStorage("shellGlass") private var shellGlass = ShellGlass.artwork
-    @State private var artColor: Color?
 
     var body: some View {
-        let state = model.player.state
         ZStack(alignment: .top) {
             if model.expanded {
                 Drawer(model: model, namespace: namespace)
@@ -31,47 +28,14 @@ struct EncoreView: View {
         .frame(width: PanelMetrics.width,
                height: model.expanded ? PanelMetrics.drawerHeight : PanelMetrics.pillHeight,
                alignment: .top)
-        .background { if shellGlass == .artwork { ArtworkTint(url: state.artURL) } }
         .clipShape(.rect(cornerRadius: PanelMetrics.radius))
-        .glassEffect(shellGlass.glass(tint: artColor), in: .rect(cornerRadius: PanelMetrics.radius))
-        .task(id: state.artURL) { artColor = await averageColor(of: state.artURL) }
+        .glassEffect(.regular, in: .rect(cornerRadius: PanelMetrics.radius))
         .padding(PanelMetrics.margin)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(response: 0.42, dampingFraction: 0.86),
                    value: model.expanded)
         .animation(.easeInOut(duration: 0.25), value: model.tab)
         .animation(.easeInOut(duration: 0.25), value: model.showQueue)
-    }
-}
-
-/// How the panel's Liquid Glass is drawn.
-enum ShellGlass: String, CaseIterable, Identifiable {
-    /// Regular glass over the blurred cover art.
-    case artwork
-    /// Regular glass only: the desktop shows through, frosted.
-    case regular
-    /// Clear glass: the most see-through variant.
-    case clear
-    /// Regular glass tinted with the cover's average colour.
-    case tinted
-
-    var id: String { rawValue }
-
-    var title: String {
-        switch self {
-        case .artwork: "Cover art"
-        case .regular: "Frosted"
-        case .clear: "Clear"
-        case .tinted: "Cover colour"
-        }
-    }
-
-    func glass(tint: Color?) -> Glass {
-        switch self {
-        case .artwork, .regular: .regular
-        case .clear: .clear
-        case .tinted: .regular.tint(tint?.opacity(0.35))
-        }
     }
 }
 

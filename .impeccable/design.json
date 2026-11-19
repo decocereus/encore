@@ -1,11 +1,11 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-19T00:00:00Z",
+  "generatedAt": "2026-11-19T19:00:00Z",
   "title": "Design System: Encore",
   "extensions": {
     "platform": "macos-26-swiftui",
     "unverified": [
-      "Light appearance: never captured. Frontmatter colours are dark-appearance resolutions of SwiftUI semantic styles; light legibility of the artwork tint (blur 40, opacity 0.5) and the fill ladder is unverified.",
+      "Light appearance: never captured. Frontmatter colours are dark-appearance resolutions of SwiftUI semantic styles; light legibility of the plain glass, the fill ladder and the pill's mini sliders is unverified.",
       "Ducked state: never captured. DuckBadge in the drawer header and the 'Lowered for {app}' line in the pill are documented from source only."
     ],
     "colorMeta": {
@@ -200,24 +200,19 @@
       "time": {
         "displayName": "Time",
         "canonical": ".caption2.monospacedDigit()",
-        "purpose": "Scrubber times with .numericText() transition."
+        "purpose": "Drawer scrubber times with .numericText() transition; pill seek-row elapsed time and track length, 34pt wide, no transition."
       }
     },
     "materials": [
       {
         "name": "panel-glass",
         "value": ".glassEffect(.regular, in: .rect(cornerRadius: 28))",
-        "purpose": "The single panel surface, over ArtworkTint; window shadow off (hasShadow = false)."
+        "purpose": "The single panel surface: plain glass with nothing painted under it, so the desktop shows through; window shadow off (hasShadow = false)."
       },
       {
         "name": "tab-glass",
         "value": ".glassEffect(.regular.interactive(), in: .capsule)",
         "purpose": "The bottom tab capsule; the only other glass."
-      },
-      {
-        "name": "artwork-tint",
-        "value": "cover image, scaledToFill, blur(radius: 40), opacity(0.5), crossfade 0.6s",
-        "purpose": "Gives the panel the current cover's colour."
       }
     ],
     "shadows": [
@@ -234,7 +229,7 @@
       },
       {
         "name": "pill-height",
-        "value": "56pt"
+        "value": "128pt"
       },
       {
         "name": "drawer-height",
@@ -257,6 +252,26 @@
         "value": "40pt circle"
       },
       {
+        "name": "pill-padding",
+        "value": "8pt top and bottom, 8pt leading, 10pt trailing; rows 6pt apart"
+      },
+      {
+        "name": "pill-expand-chevron",
+        "value": "28pt glyph button"
+      },
+      {
+        "name": "pill-time-width",
+        "value": "34pt each side of the seek slider"
+      },
+      {
+        "name": "pill-volume-width",
+        "value": "132pt"
+      },
+      {
+        "name": "pill-transport",
+        "value": "32pt previous, 36pt play/pause, 32pt next, 6pt apart"
+      },
+      {
         "name": "art-drawer",
         "value": "232pt, 18pt radius"
       },
@@ -271,10 +286,6 @@
       {
         "name": "tab-item-height",
         "value": "34pt"
-      },
-      {
-        "name": "progress-line",
-        "value": "2pt, inset 26pt, 3pt from bottom"
       },
       {
         "name": "list-fade",
@@ -303,11 +314,6 @@
         "purpose": "Tab and Up Next changes; tab plate uses matchedGeometryEffect(id: \"tab\")."
       },
       {
-        "name": "artwork-crossfade",
-        "value": ".easeInOut(duration: 0.6)",
-        "purpose": "Artwork tint on track change."
-      },
-      {
         "name": "symbol-replace",
         "value": ".contentTransition(.symbolEffect(.replace))",
         "purpose": "Play/pause glyph swap."
@@ -315,7 +321,7 @@
       {
         "name": "numeric-text",
         "value": ".contentTransition(.numericText())",
-        "purpose": "Scrubber times."
+        "purpose": "Drawer scrubber times only; the pill's seek-row times do not animate."
       },
       {
         "name": "waveform-live",
@@ -329,9 +335,9 @@
       "name": "Glass Pill",
       "kind": "custom",
       "refersTo": "panel-pill",
-      "description": "The collapsed player: one Liquid Glass capsule over the artwork tint, carrying art, title over artist, play/pause and expand. Approximated in CSS; the real material is .glassEffect(.regular).",
-      "html": "<div class=\"ds-ground\"><div class=\"ds-pill\"><div class=\"ds-pill-art\"></div><div class=\"ds-pill-text\"><div class=\"ds-pill-title\">Track Title</div><div class=\"ds-pill-sub\">Artist Name</div></div><button class=\"ds-pp ds-pp-36\" aria-label=\"Pause\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"currentColor\" aria-hidden=\"true\"><rect x=\"3\" y=\"2\" width=\"3\" height=\"10\" rx=\"1\"/><rect x=\"8\" y=\"2\" width=\"3\" height=\"10\" rx=\"1\"/></svg></button><button class=\"ds-glyph ds-glyph-28\" aria-label=\"Expand\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3.5 5.5 7 9l3.5-3.5\"/></svg></button><div class=\"ds-pill-progress\"><span></span></div></div></div>",
-      "css": ".ds-ground { background: linear-gradient(135deg, #5a3a22, #2a1d14); padding: 12px; width: 384px; font-family: -apple-system, 'SF Pro', system-ui; } .ds-pill { position: relative; width: 360px; height: 56px; border-radius: 28px; display: flex; align-items: center; gap: 10px; padding: 0 10px 0 8px; box-sizing: border-box; background: rgba(255,255,255,0.10); backdrop-filter: blur(20px) saturate(1.6); border: 0.5px solid rgba(255,255,255,0.22); color: rgba(255,255,255,0.85); } .ds-pill-art { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #c9772f, #5b2a14); flex: none; } .ds-pill-text { flex: 1; min-width: 0; } .ds-pill-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-pill-sub { font-size: 10px; color: rgba(255,255,255,0.55); margin-top: 1px; } .ds-pill-progress { position: absolute; left: 26px; right: 26px; bottom: 3px; height: 2px; border-radius: 1px; background: rgba(255,255,255,0.12); } .ds-pill-progress span { display: block; width: 30%; height: 100%; border-radius: 1px; background: rgba(255,255,255,0.55); } .ds-pp { border: none; border-radius: 50%; background: #0A84FF; color: #fff; display: grid; place-items: center; cursor: pointer; flex: none; } .ds-pp-36 { width: 36px; height: 36px; } .ds-pp:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 2px; } .ds-glyph { border: none; background: transparent; color: rgba(255,255,255,0.85); border-radius: 50%; display: grid; place-items: center; cursor: pointer; flex: none; transition: background 0.15s; } .ds-glyph-28 { width: 28px; height: 28px; } .ds-glyph:hover { background: rgba(255,255,255,0.10); } .ds-glyph:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 1px; }"
+      "description": "The collapsed player: one Liquid Glass panel, 128pt tall, in three rows. Track row (40pt circular art, title over artist, 28pt expand chevron; clicking it expands), seek row (elapsed time, a mini primary-tinted slider, track length, 34pt caption2 monospaced digits), controls row (132pt volume slider, then 32pt previous, 36pt play/pause, 32pt next). Approximated in CSS; the real material is plain .glassEffect(.regular) over the desktop.",
+      "html": "<div class=\"ds-ground\"><div class=\"ds-pill\"><div class=\"ds-pill-track\" role=\"button\" tabindex=\"0\" aria-label=\"Expand\"><div class=\"ds-pill-art\"></div><div class=\"ds-pill-text\"><div class=\"ds-pill-title\">Track Title</div><div class=\"ds-pill-sub\">Artist Name</div></div><button class=\"ds-glyph ds-glyph-28\" aria-label=\"Expand\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3.5 5.5 7 9l3.5-3.5\"/></svg></button></div><div class=\"ds-pill-seek\"><span class=\"ds-time ds-time-l\">1:12</span><div class=\"ds-mini\" role=\"slider\" tabindex=\"0\" aria-label=\"Playback position\" aria-valuenow=\"35\"><span class=\"ds-mini-fill\" style=\"width:35%\"></span><span class=\"ds-mini-thumb\" style=\"left:35%\"></span></div><span class=\"ds-time\">3:24</span></div><div class=\"ds-pill-controls\"><div class=\"ds-vol\"><svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M1 3.5h2L6 1v8L3 6.5H1z\"/></svg><div class=\"ds-mini\" role=\"slider\" tabindex=\"0\" aria-label=\"Volume\" aria-valuenow=\"70\"><span class=\"ds-mini-fill\" style=\"width:70%\"></span><span class=\"ds-mini-thumb\" style=\"left:70%\"></span></div><svg width=\"14\" height=\"10\" viewBox=\"0 0 14 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M1 3.5h2L6 1v8L3 6.5H1z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M7.8 3.4a2.4 2.4 0 0 1 0 3.2M9.6 2a4.4 4.4 0 0 1 0 6M11.4.7a6.4 6.4 0 0 1 0 8.6\"/></svg></div><span class=\"ds-spacer\"></span><button class=\"ds-glyph ds-glyph-32\" aria-label=\"Previous\"><svg width=\"16\" height=\"12\" viewBox=\"0 0 16 12\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M8 1v10L1 6zM15 1v10L8 6z\"/></svg></button><button class=\"ds-pp ds-pp-36\" aria-label=\"Pause\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 14 14\" fill=\"currentColor\" aria-hidden=\"true\"><rect x=\"3\" y=\"2\" width=\"3\" height=\"10\" rx=\"1\"/><rect x=\"8\" y=\"2\" width=\"3\" height=\"10\" rx=\"1\"/></svg></button><button class=\"ds-glyph ds-glyph-32\" aria-label=\"Next\"><svg width=\"16\" height=\"12\" viewBox=\"0 0 16 12\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M1 1v10l7-5zM8 1v10l7-5z\"/></svg></button></div></div></div>",
+      "css": ".ds-ground { background: linear-gradient(135deg, #5a3a22, #2a1d14); padding: 12px; width: 384px; font-family: -apple-system, 'SF Pro', system-ui; } .ds-pill { width: 360px; height: 128px; border-radius: 28px; display: flex; flex-direction: column; gap: 6px; padding: 8px 10px 8px 8px; box-sizing: border-box; background: rgba(255,255,255,0.10); backdrop-filter: blur(20px) saturate(1.6); border: 0.5px solid rgba(255,255,255,0.22); color: rgba(255,255,255,0.85); } .ds-pill-track { display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 20px; } .ds-pill-track:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 2px; } .ds-pill-art { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #c9772f, #5b2a14); flex: none; } .ds-pill-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; } .ds-pill-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-pill-sub { font-size: 10px; color: rgba(255,255,255,0.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-pill-seek { display: flex; align-items: center; gap: 8px; padding: 0 4px; font-size: 10px; font-variant-numeric: tabular-nums; color: rgba(255,255,255,0.55); } .ds-time { width: 34px; flex: none; } .ds-time-l { text-align: right; } .ds-mini { position: relative; flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.18); cursor: pointer; } .ds-mini-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: rgba(255,255,255,0.85); } .ds-mini-thumb { position: absolute; top: 50%; width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-radius: 50%; background: #fff; box-shadow: 0 0.5px 2px rgba(0,0,0,0.35); transition: transform 0.12s; } .ds-mini:hover .ds-mini-thumb { transform: scale(1.12); } .ds-mini:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 4px; } .ds-pill-controls { display: flex; align-items: center; gap: 6px; } .ds-vol { width: 132px; flex: none; display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.55); } .ds-vol svg { flex: none; } .ds-spacer { flex: 1; min-width: 8px; } .ds-pp { border: none; border-radius: 50%; background: #0A84FF; color: #fff; display: grid; place-items: center; cursor: pointer; flex: none; transition: filter 0.15s; } .ds-pp-36 { width: 36px; height: 36px; } .ds-pp:hover { filter: brightness(1.08); } .ds-pp:active { filter: brightness(0.92); } .ds-pp:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 2px; } .ds-glyph { border: none; background: transparent; color: rgba(255,255,255,0.85); border-radius: 50%; display: grid; place-items: center; cursor: pointer; flex: none; transition: background 0.15s; } .ds-glyph-28 { width: 28px; height: 28px; } .ds-glyph-32 { width: 32px; height: 32px; } .ds-glyph:hover { background: rgba(255,255,255,0.10); } .ds-glyph:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: 1px; }"
     },
     {
       "name": "Play/Pause Button",
@@ -392,10 +398,10 @@
   ],
   "narrative": {
     "northStar": "The Pill Is the Player",
-    "overview": "Encore is one piece of Liquid Glass hanging under the menu bar. At rest it is a 56pt capsule carrying the artwork, the title over the artist, a play/pause button and an expand chevron. Expanding does not open another window: the same glass shape grows downward into a 620pt drawer, and the artwork moves with it, from a 40pt circle in the pill to a large rounded square in the drawer. Collapsing runs the same movement in reverse.\n\nThe ground under the glass belongs to the music. The current cover, blurred and laid at half opacity under the panel, gives the whole player that cover's colour, so the palette changes with every track and the chrome brings no colour of its own. The one fixed colour is the system accent, and it appears only on controls that start playback. Everything else is drawn in hierarchical system foregrounds (primary, secondary, tertiary) and a short ladder of translucent primary fills. Type is SF Pro at macOS system text styles, and every icon is an SF Symbol.\n\nThe density is that of a menu bar utility: small, close, and quick to dismiss. There is no YouTube or YouTube Music branding anywhere in the chrome. Liked Songs uses Encore's own heart tile instead of the service's artwork.",
+    "overview": "Encore is one piece of Liquid Glass hanging under the menu bar. At rest it is a 128pt compact player in three rows: the artwork with the title over the artist and an expand chevron, a seek bar, then volume beside previous, play/pause and next. Expanding does not open another window: the same glass shape grows downward into a 620pt drawer, and the artwork moves with it, from a 40pt circle in the pill to a large rounded square in the drawer. Collapsing runs the same movement in reverse.\n\nThe glass is frosted Liquid Glass with nothing painted under it, so the desktop shows through, blurred. The artwork itself is the only colour that changes with the track, and the chrome brings no colour of its own. The one fixed colour is the system accent, and it appears only on controls that start playback. Everything else is drawn in hierarchical system foregrounds (primary, secondary, tertiary) and a short ladder of translucent primary fills. Type is SF Pro at macOS system text styles, and every icon is an SF Symbol.\n\nThe density is that of a menu bar utility: small, close, and quick to dismiss. There is no YouTube or YouTube Music branding anywhere in the chrome. Liked Songs uses Encore's own heart tile instead of the service's artwork.",
     "keyCharacteristics": [
-      "One continuous glass shape, 360pt wide, in two heights: pill (56pt) and drawer (620pt).",
-      "The artwork tints the panel. The chrome adds no colour except the accent.",
+      "One continuous glass shape, 360pt wide, in two heights: pill (128pt) and drawer (620pt).",
+      "Frosted glass over the desktop. The chrome adds no colour except the accent.",
       "The accent fills play controls and nothing else.",
       "SF Pro system text styles and SF Symbols only. Hierarchy comes from weight and from the primary, secondary and tertiary foregrounds, never from new colours.",
       "Icon-only controls have no chrome at rest. They show a soft circular fill on hover.",
@@ -408,8 +414,8 @@
         "section": "colors"
       },
       {
-        "name": "The Cover Owns the Colour Rule",
-        "body": "The chrome adds no hue of its own. Panel colour comes from the artwork tint under the glass, and every overlay is a primary-foreground opacity from the fill ladder, so the panel stays readable against any cover.",
+        "name": "The No Painted Colour Rule",
+        "body": "The chrome adds no hue of its own. The panel is plain frosted glass, and every overlay is a primary-foreground opacity from the fill ladder, so the panel stays readable over any desktop.",
         "section": "colors"
       },
       {
@@ -429,7 +435,7 @@
       }
     ],
     "dos": [
-      "Do keep the panel at 360pt wide, 56pt as a pill and 620pt as a drawer, with a 28pt corner radius, inside a 12pt margin.",
+      "Do keep the panel at 360pt wide, 128pt as a pill and 620pt as a drawer, with a 28pt corner radius, inside a 12pt margin.",
       "Do put new drawer content inside the existing glass, using fills from the ladder (0.06 to 0.20) for plates, fields and selection.",
       "Do use the accent only for controls that start or pause playback, with a white glyph.",
       "Do build icon controls as Glyph Buttons: an SF Symbol, a circular hit area, a 0.10 hover fill, a `.help` tooltip and an accessibility label.",
@@ -443,7 +449,7 @@
       "Don't add YouTube or YouTube Music logos or brand colours to the chrome.",
       "Don't add new glass layers for rows, cards or buttons. The panel and the tab capsule are the only glass.",
       "Don't open a separate window or popover for player content. It grows inside the drawer.",
-      "Don't introduce fixed brand colours. The artwork tint supplies the panel's colour."
+      "Don't introduce fixed brand colours or paint a ground under the glass."
     ]
   }
 }

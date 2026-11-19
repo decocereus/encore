@@ -109,7 +109,6 @@ final class PlayerController: NSObject {
         pageLoaded = false
         webView?.load(URLRequest(url: Self.home))
     }
-    func reload() { webView?.reload() }
 
     func togglePlayPause() { run("toggle()") }
     func play() { run("play()") }
@@ -163,11 +162,6 @@ final class PlayerController: NSObject {
     /// The signed-in Google account's display name.
     func accountName() async throws -> String {
         try await ask("return await window.__ytmbar.account()") as? String ?? ""
-    }
-
-    func home() async throws -> [Playlist] {
-        let rows = try await ask("return await window.__ytmbar.home()") as? [[String: Any]] ?? []
-        return rows.compactMap(Self.collection)
     }
 
     private func ask(_ script: String, _ arguments: [String: Any] = [:]) async throws -> Any? {
@@ -278,7 +272,7 @@ extension PlayerController: WKNavigationDelegate, WKUIDelegate {
 
 enum BridgeError: LocalizedError {
     case notReady
-    var errorDescription: String? { "YouTube Music didn't finish loading. Try Reload from the profile menu." }
+    var errorDescription: String? { "YouTube Music didn't finish loading. Check your connection and try again." }
 }
 
 /// WKUserContentController retains its handlers; this breaks the cycle.
