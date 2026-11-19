@@ -16,9 +16,9 @@ Encore is an unofficial client. It isn't affiliated with or endorsed by Google o
 
 - **Play from the menu bar.** The pill shows the song and a play/pause button. Option-click the menu bar icon to play or pause without opening anything. Media keys, AirPods controls and Control Center work too.
 - **Expand when you want more.** The drawer has Now Playing (artwork, scrubber, volume, Up Next), Library (Liked Songs and your playlists) and Search.
-- **Sign in with the browser you already use.** Encore copies your YouTube Music session from a Chromium browser profile (Helium, Chrome, Arc, Brave, Edge, Chromium, Vivaldi). There's no Google sign-in screen inside the app.
+- **Sign in once, inside the panel.** Google's sign-in page opens in the drawer itself. Approve on your phone or use your password, and Encore stays signed in.
 - **Lower the music while you dictate.** When a dictation app such as [Hex](https://github.com/kitlangton/Hex) opens the microphone, Encore fades the music down, then brings it back when you stop talking. You choose which apps trigger this, and how quiet the music gets, in Settings.
-- **Several accounts.** Add one Encore account per browser profile and switch between them from the account menu.
+- **Several accounts.** Each Encore account keeps its own Google sign-in. Switch between them from the account menu.
 
 ## Requirements
 
@@ -41,14 +41,9 @@ YouTube Music's own web player runs in a hidden `WKWebView`, which handles your 
 
 ### Sign-in
 
-When you connect an account, Encore:
+**Sign In with Google** shows Google's own sign-in page inside the drawer. It writes into that Encore account's isolated `WKWebsiteDataStore`, the same one the player uses, so the player is signed in as soon as Google returns to YouTube Music. Google keeps that session fresh by itself.
 
-1. finds browser profiles on your Mac that have a YouTube session,
-2. asks macOS for that browser's cookie encryption key (you'll see a keychain prompt),
-3. decrypts only the `youtube.com` and `google.com` cookies from a copy of the profile's cookie database, and
-4. stores them in that Encore account's own isolated `WKWebsiteDataStore`.
-
-Nothing leaves your Mac. Google refreshes part of the session from time to time, so a copied session can lapse while your browser stays signed in. When that happens Encore imports again from the same profile. Choose **Always Allow** at the keychain prompt so this happens silently.
+macOS only lets apps that Apple approves as web browsers use passkeys for google.com, so Encore hides passkey support from the page. Google then offers its other methods, such as a prompt on your phone or your password.
 
 ### Dictation ducking
 

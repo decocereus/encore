@@ -100,6 +100,14 @@ private struct Drawer: View {
     let namespace: Namespace.ID
 
     var body: some View {
+        if model.signingIn {
+            SignInSheet(model: model)
+        } else {
+            content
+        }
+    }
+
+    private var content: some View {
         VStack(spacing: 0) {
             DrawerHeader(model: model)
             Group {
@@ -188,9 +196,9 @@ private struct AccountMenu: View {
                         get: { profile.id == model.profiles.currentID },
                         set: { if $0 { model.select(profile) } }))
                 }
-                Button("Add Account from Browser…", action: model.addAccount)
-                if let source = model.currentSource {
-                    Button("Reconnect \(source.title)") { Task { await model.connect(source) } }
+                Button("Add Account…", action: model.addAccount)
+                if !model.player.state.signedIn {
+                    Button("Sign In…", action: model.signIn)
                 }
             }
             Divider()

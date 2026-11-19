@@ -69,7 +69,7 @@ final class PlayerController: NSObject {
 
     private static let home = URL(string: "https://music.youtube.com")!
     // Google refuses sign-in from user agents it doesn't recognise, so present as Safari.
-    private static let userAgent =
+    static let userAgent =
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15"
     private static let allowedHosts = ["youtube.com", "google.com", "gstatic.com", "googleusercontent.com", "ytimg.com", "youtube-nocookie.com"]
 
@@ -102,19 +102,13 @@ final class PlayerController: NSObject {
         onWebViewReplaced?(view)
     }
 
-    /// Copies a browser profile's YouTube sign-in into this profile's cookie store and reloads.
-    func importSession(from source: BrowserProfile) async throws {
-        let cookies = try await Task.detached { try BrowserSession.cookies(from: source) }.value
-        guard let store = webView?.configuration.websiteDataStore.httpCookieStore else { throw BridgeError.notReady }
-        for cookie in await store.allCookies() where cookie.domain.hasSuffix("youtube.com") || cookie.domain.hasSuffix("google.com") {
-            await store.deleteCookie(cookie)
-        }
-        for cookie in cookies { await store.setCookie(cookie) }
-        pageLoaded = false
-        goHome()
-    }
+    /// The current account's cookie store, shared with the sign-in sheet.
+    var dataStore: WKWebsiteDataStore? { webView?.configuration.websiteDataStore }
 
-    func goHome() { webView?.load(URLRequest(url: Self.home)) }
+    func goHome() {
+        pageLoaded = false
+        webView?.load(URLRequest(url: Self.home))
+    }
     func reload() { webView?.reload() }
 
     func togglePlayPause() { run("toggle()") }
@@ -164,6 +158,11 @@ final class PlayerController: NSObject {
         if header.thumb == nil { header.thumb = collection.thumb }
         let tracks = (dict["tracks"] as? [[String: Any]] ?? []).compactMap(Self.track)
         return PlaylistDetail(playlist: header, tracks: tracks)
+    }
+
+    /// The signed-in Google account's display name.
+    func accountName() async throws -> String {
+        try await ask("return await window.__ytmbar.account()") as? String ?? ""
     }
 
     func home() async throws -> [Playlist] {

@@ -218,6 +218,12 @@ let bridgeScript = #"""
     },
     duck(factor) { duckFactor = factor; applyDuck(); },
     // Playlists saved or created by the signed-in account. Liked Music ("VLLM") is part of this list.
+    async account() {
+      const json = await innertube('account/account_menu', {});
+      const header = findKey(json, 'activeAccountHeaderRenderer') || {};
+      const runs = header.accountName && header.accountName.runs;
+      return runs && runs[0] ? runs[0].text : '';
+    },
     async library() {
       const json = await innertube('browse', { browseId: 'FEmusic_liked_playlists' });
       return twoRowItems(json).map(toCollection).filter(c => c && c.id.startsWith('VL') && c.id !== 'VLSE');

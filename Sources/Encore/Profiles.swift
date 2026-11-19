@@ -5,8 +5,6 @@ import Observation
 struct Profile: Codable, Equatable, Identifiable {
     var id: UUID
     var name: String
-    /// The browser profile the sign-in was imported from (`BrowserProfile.id`), used to reconnect.
-    var source: String?
 }
 
 @MainActor
@@ -48,13 +46,6 @@ final class ProfileStore {
 
     func rename(_ id: UUID, to name: String) {
         guard let i = profiles.firstIndex(where: { $0.id == id }) else { return }
-        profiles[i].name = name
-        save()
-    }
-
-    func setSource(_ id: UUID, source: String, name: String) {
-        guard let i = profiles.firstIndex(where: { $0.id == id }) else { return }
-        profiles[i].source = source
         profiles[i].name = name
         save()
     }

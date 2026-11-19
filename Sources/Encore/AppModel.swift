@@ -36,10 +36,8 @@ final class AppModel {
     var tab: DrawerTab = .nowPlaying
     var showQueue = false
     var searchQuery = ""
-    /// Browser profiles signed into YouTube, refreshed when the connect view appears.
-    var browserProfiles: [BrowserProfile] = []
-    var connecting: BrowserProfile.ID?
-    var connectError: String?
+    /// Google's sign-in page is showing in the drawer.
+    var signingIn = false
 
     var library: [Playlist] = []
     var libraryLoading = false
@@ -57,11 +55,6 @@ final class AppModel {
         self.profiles = profiles
         self.ducking = ducking
         self.ducker = ducker
-    }
-
-    var currentSource: BrowserProfile? {
-        guard let source = profiles.current.source else { return nil }
-        return BrowserSession.signedInProfiles().first { $0.id == source }
     }
 
     /// Display name of the app the music is ducked for.
@@ -116,50 +109,43 @@ final class AppModel {
         detail = nil
     }
 
-    func refreshBrowserProfiles() {
-        browserProfiles = BrowserSession.signedInProfiles()
+    func signIn() {
+        expanded = true
+        signingIn = true
     }
 
-    func connect(_ source: BrowserProfile) async {
-        connecting = source.id
-        connectError = nil
-        defer { connecting = nil }
-        do {
-            try await player.importSession(from: source)
-            profiles.setSource(profiles.currentID, source: source.id, name: source.title)
-            resetAccountState()
-        } catch {
-            connectError = error.localizedDescription
+    /// Google's sign-in landed back on YouTube Music: reload the player with the new session and name the account.
+    func finishSignIn() {
+        signingIn = false
+        resetAccountState()
+        player.goHome()
+        tab = .library
+        Task {
+            for _ in 0..<40 where !(player.pageLoaded && player.state.signedIn) {
+                try? await Task.sleep(for: .milliseconds(250))
+            }
+            if let name = try? await player.accountName(), !name.isEmpty {
+                profiles.rename(profiles.currentID, to: name)
+            }
         }
-    }
-
-    @ObservationIgnored private var lastAutoReconnect: Date?
-
-    /// Google rotates part of the session, so a copied sign-in eventually lapses while the browser keeps working.
-    /// When that happens, import again from the same browser profile (silent once the user chose Always Allow).
-    func checkSession() {
-        guard player.pageLoaded, !player.state.signedIn, connecting == nil, let source = currentSource else { return }
-        if let last = lastAutoReconnect, Date().timeIntervalSince(last) < 600 { return }
-        lastAutoReconnect = Date()
-        Task { await connect(source) }
     }
 
     func select(_ profile: Profile) {
         guard profile.id != profiles.currentID else { return }
+        signingIn = false
         profiles.select(profile.id)
         player.load(profile: profiles.current)
         resetAccountState()
     }
 
-    /// A new, empty account; the Library tab then offers the browser profiles to connect.
+    /// A new, empty account that goes straight to Google's sign-in.
     func addAccount() {
         let profile = profiles.add(name: "New Account")
         profiles.select(profile.id)
         player.load(profile: profile)
         resetAccountState()
-        expanded = true
         tab = .library
-        refreshBrowserProfiles()
+        signIn()
     }
 
     func remove(_ profile: Profile) {

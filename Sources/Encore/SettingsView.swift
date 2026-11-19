@@ -51,7 +51,7 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.radioGroup)
                 HStack {
-                    Button("Add Account from Browser…") {
+                    Button("Add Account…") {
                         model.addAccount()
                         model.showPanel()
                     }

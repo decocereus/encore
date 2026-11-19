@@ -25,22 +25,6 @@
           "#cfe6ff"
         ]
       },
-      "warning": {
-        "role": "tertiary",
-        "displayName": "Warning Orange",
-        "canonical": "Color.orange",
-        "note": "Connect error label only.",
-        "tonalRamp": [
-          "#4d2e03",
-          "#754605",
-          "#9f5f07",
-          "#cc7a08",
-          "#FF9F0A",
-          "#ffb648",
-          "#ffcd88",
-          "#ffe6c7"
-        ]
-      },
       "label": {
         "role": "neutral",
         "displayName": "Label",
@@ -186,12 +170,12 @@
       "headline": {
         "displayName": "Headline",
         "canonical": ".headline",
-        "purpose": "Empty, error and Connect titles; playlist name in its header."
+        "purpose": "Empty, error and sign-in prompt titles; playlist name in its header."
       },
       "body-strong": {
         "displayName": "Body Strong",
         "canonical": ".callout.weight(.semibold | .medium)",
-        "purpose": "Pill title, current-row title, playlist and browser names, Play label."
+        "purpose": "Pill title, current-row title, playlist names, Play label."
       },
       "body": {
         "displayName": "Body",
@@ -201,7 +185,7 @@
       "subheadline": {
         "displayName": "Subheadline",
         "canonical": ".subheadline",
-        "purpose": "Artist · album; semibold for list section labels."
+        "purpose": "Artist \u00b7 album; semibold for list section labels."
       },
       "label": {
         "displayName": "Label",
@@ -211,7 +195,7 @@
       "caption": {
         "displayName": "Caption",
         "canonical": ".caption / .caption2",
-        "purpose": "Subtitles, pill artist line, mini player, keychain note."
+        "purpose": "Subtitles, pill artist line, mini player."
       },
       "time": {
         "displayName": "Time",
@@ -386,7 +370,7 @@
       "kind": "custom",
       "refersTo": "track-row",
       "description": "40pt thumbnail, title over subtitle. Hover shows a 0.07 plate and a trailing play glyph; the playing track is semibold with an animated waveform.",
-      "html": "<div class=\"ds-ground3\"><button class=\"ds-row\"><span class=\"ds-thumb\"></span><span class=\"ds-row-text\"><span class=\"ds-row-title\">Low Tide</span><span class=\"ds-row-sub\">Artist A · 2:10</span></span><span class=\"ds-row-trail\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M3 1.6v8.8a.6.6 0 0 0 .9.5l7-4.4a.6.6 0 0 0 0-1L3.9 1.1a.6.6 0 0 0-.9.5z\"/></svg></span></button><button class=\"ds-row ds-row-current\"><span class=\"ds-thumb\" style=\"background:linear-gradient(135deg,#6fbf5a,#2d5a26)\"></span><span class=\"ds-row-text\"><span class=\"ds-row-title\">Glasshouse</span><span class=\"ds-row-sub\">Artist A · 2:19</span></span><span class=\"ds-row-wave\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M1.5 5v2M4 3v6M6.5 1.5v9M9 3.5v5M11 5v2\"/></svg></span></button></div>",
+      "html": "<div class=\"ds-ground3\"><button class=\"ds-row\"><span class=\"ds-thumb\"></span><span class=\"ds-row-text\"><span class=\"ds-row-title\">Low Tide</span><span class=\"ds-row-sub\">Artist A \u00b7 2:10</span></span><span class=\"ds-row-trail\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M3 1.6v8.8a.6.6 0 0 0 .9.5l7-4.4a.6.6 0 0 0 0-1L3.9 1.1a.6.6 0 0 0-.9.5z\"/></svg></span></button><button class=\"ds-row ds-row-current\"><span class=\"ds-thumb\" style=\"background:linear-gradient(135deg,#6fbf5a,#2d5a26)\"></span><span class=\"ds-row-text\"><span class=\"ds-row-title\">Glasshouse</span><span class=\"ds-row-sub\">Artist A \u00b7 2:19</span></span><span class=\"ds-row-wave\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M1.5 5v2M4 3v6M6.5 1.5v9M9 3.5v5M11 5v2\"/></svg></span></button></div>",
       "css": ".ds-ground3 { background: linear-gradient(135deg, #5a3a22, #2a1d14); padding: 12px 10px; width: 340px; font-family: -apple-system, 'SF Pro', system-ui; } .ds-row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 5px 8px; border: none; border-radius: 10px; background: transparent; color: rgba(255,255,255,0.85); text-align: left; cursor: pointer; font: inherit; transition: background 0.12s; } .ds-row:hover { background: rgba(255,255,255,0.07); } .ds-row:focus-visible { outline: 2px solid rgba(10,132,255,0.6); outline-offset: -2px; } .ds-thumb { width: 40px; height: 40px; border-radius: 6px; flex: none; background: linear-gradient(135deg, #b0603e, #5a2a1a); } .ds-row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; } .ds-row-title { font-size: 12px; } .ds-row-sub { font-size: 10px; color: rgba(255,255,255,0.55); } .ds-row-trail { color: rgba(255,255,255,0.55); opacity: 0; } .ds-row:hover .ds-row-trail { opacity: 1; } .ds-row-current .ds-row-title { font-weight: 600; } .ds-row-wave { color: rgba(255,255,255,0.55); }"
     },
     {

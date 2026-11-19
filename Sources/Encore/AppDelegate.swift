@@ -63,7 +63,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         hosting.frame = NSRect(origin: .zero, size: Self.panelSize)
         panel = PlayerPanel(contentView: hosting, size: Self.panelSize)
         NotificationCenter.default.addObserver(forName: NSWindow.didResignKeyNotification, object: panel, queue: .main) { [weak self] _ in
-            MainActor.assumeIsolated { self?.hidePanel() }
+            MainActor.assumeIsolated { self?.autoHide() }
         }
 
         webWindow.title = "YouTube Music"
@@ -71,10 +71,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         webWindow.center()
 
         player.onWebViewReplaced = { [weak self] view in self?.embed(view) }
-        player.onState = { [weak self] state in
-            self?.render(state)
-            self?.model.checkSession()
-        }
+        player.onState = { [weak self] state in self?.render(state) }
         player.load(profile: profiles.current)
     }
 
@@ -101,7 +98,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.orderFrontRegardless()
         panel.makeKey()
         outsideClickMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
-            MainActor.assumeIsolated { self?.hidePanel() }
+            MainActor.assumeIsolated { self?.autoHide() }
         }
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             // Escape collapses the drawer (handled by its button), then hides the pill.
@@ -111,6 +108,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
             return event
         }
+    }
+
+    /// Clicking away hides the panel, except during sign-in, when the user may switch to a password manager or their phone.
+    private func autoHide() {
+        guard !model.signingIn else { return }
+        hidePanel()
     }
 
     private func hidePanel() {

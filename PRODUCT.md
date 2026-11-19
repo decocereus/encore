@@ -18,12 +18,12 @@ A native SwiftUI interface (Liquid Glass on macOS 26) over YouTube Music's own w
 ## Operating Context
 - Lives in the menu bar as a glass panel. Opened briefly between tasks, then dismissed. Music keeps playing when the panel is closed.
 - The user dictates with Hex (voice to text). Other dictation tools exist (Superwhisper, Wispr Flow, MacWhisper).
-- Multiple Google accounts are switched through isolated Encore accounts, each imported from a browser profile.
+- Multiple Google accounts are switched through isolated Encore accounts, each with its own sign-in.
 
 ## Capabilities and Constraints
 - Default state is a compact card (art, title, transport). The user expands it in place to reach Library (liked songs, playlists), Search and Up Next.
 - Playback engine: hidden WKWebView on music.youtube.com with an injected JS bridge. Library and search use YouTube Music's InnerTube API from inside the page, signed with the page's own session.
-- Sign-in is imported from a browser profile the user is already signed into (Helium, Chrome, Arc, Brave, Edge, Chromium, Vivaldi). Encore reads that profile's YouTube and Google cookies after a macOS keychain prompt; there is no in-app Google sign-in screen. Google may rotate the session, so accounts can be reconnected.
+- Sign-in happens once per account on Google's own page, shown inside the drawer (no separate window). Passkeys can't work for google.com in a non-browser app, so the page hides them and Google offers a phone prompt or password. Copying cookies from a browser was tried and dropped: copied sessions go stale and need keychain prompts.
 - Dictation ducking: when a chosen app uses the microphone, fade volume down to a set level, restore when it stops. The trigger apps are user configurable (Hex by default, or any app using the mic). The duck level is adjustable.
 - macOS 26 minimum (Liquid Glass APIs).
 - Name: Encore. Public GitHub repo decocereus/encore, MIT license.

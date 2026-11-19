@@ -196,7 +196,6 @@ The panel takes its colour from the current artwork. The system adds one accent 
 - **System Accent** (`Color.accentColor`): fills the play/pause circle at every size (28, 36, 56pt) and the capsule Play button on a playlist. The glyph on it is always white. Because it is the user's own System Settings accent, Encore never hard-codes the hue. Captures render it as system blue, slightly deeper where it sits on glass.
 
 ### Tertiary
-- **Warning Orange** (`.orange`): used only for the inline error label in the Connect view, together with `exclamationmark.triangle.fill`. It is a status colour, not decoration.
 
 ### Neutral
 - **Label** (`.primary`): track titles, the selected tab, active glyphs.
@@ -220,12 +219,12 @@ The panel takes its colour from the current artwork. The system adds one accent 
 
 ### Hierarchy
 - **Title** (title3, semibold): the current track title in the drawer.
-- **Headline** (headline): empty-state and error titles, the Connect title, a playlist's name in its header.
-- **Body Strong** (callout, semibold or medium): the pill's track title, the playing track in a list (semibold), playlist and browser names (medium), the Play button's label.
+- **Headline** (headline): empty-state and error titles, the sign-in prompt title, a playlist's name in its header.
+- **Body Strong** (callout, semibold or medium): the pill's track title, the playing track in a list (semibold), playlist names (medium), the Play button's label.
 - **Body** (callout): row titles, empty-state explanations, the search field.
 - **Subheadline** (subheadline): artist · album under the drawer title. In semibold it marks list sections ("Up Next", "Playlists").
 - **Label** (caption, medium): tab labels and the duck badge.
-- **Caption** (caption / caption2): row subtitles, the pill's artist line, the mini player, the keychain note.
+- **Caption** (caption / caption2): row subtitles, the pill's artist line, the mini player.
 - **Time** (caption2, monospaced digits): elapsed and remaining time under the scrubber, animated with `.numericText()`.
 
 ### Named Rules
@@ -241,7 +240,7 @@ The panel has a fixed width of 360pt and two fixed heights: pill 56pt and drawer
 - **Drawer:** a 52pt header (account menu or Back on the left, the collapse chevron on the right, and between them the mini now-playing or the duck badge), then the tab content, then the tab capsule with 6pt above and 12pt below.
 - **Now Playing:** a vertical stack with 14pt spacing. It holds the artwork (232pt, with 8pt vertical padding), the title block, the scrubber, the transport (28pt between previous, play and next), and a volume row with an Up Next toggle. Text, scrubber and volume rows sit in a 24pt gutter. Up Next replaces the artwork in the same slot, at 248pt tall.
 - **Lists:** rows sit inside 10pt horizontal list padding. Section labels align at 18pt, which matches the row content edge (10pt list padding plus 8pt row padding). Rows stack with no gap. Lists hide their scroll indicators and fade their edges (10pt at the top, 28pt at the bottom) so rows pass under the tab capsule.
-- **Empty and error states:** centred vertically, with 32pt horizontal insets (24pt in Connect), a 12pt or 10pt stack, a headline, secondary callout copy, and standard system buttons.
+- **Empty and error states:** centred vertically, with 32pt horizontal insets (28pt in the sign-in prompt), a 12pt or 10pt stack, a headline, secondary callout copy, and standard system buttons.
 - **Settings:** a separate window with a standard grouped `Form`, 460pt wide, sized to its content. It uses system controls only.
 
 ## Elevation & Depth
@@ -301,8 +300,9 @@ An icon-only control drawn directly on the glass.
 ### Duck Badge
 - A 24pt capsule at 0.10 fill, with 10pt horizontal padding and a caption-medium `waveform` label that reads "Lowered for {app}", animated with `.variableColor.iterative`. It replaces the mini player in the drawer header. In the pill the same label replaces the artist line. **Not verified:** the ducked state was never captured. Its layout and legibility come from source only.
 
-### Source Row (Connect)
-- A 44pt row on a 12pt rounded plate (0.06 at rest, 0.10 on hover): the browser's own app icon at 26pt, the browser name in callout medium, the profile name in secondary, and a trailing chevron or a small progress spinner while connecting.
+### Sign-In Sheet
+- **Signed-out Library:** a centred prompt with a 36pt light `person.crop.circle.badge.plus`, a headline, secondary callout copy, and a large prominent capsule button, "Sign In with Google".
+- **The sheet:** it replaces the drawer's content and tab bar while signing in. The header row is 52pt, with a 32pt `xmark` glyph button (cancel action), "Sign in with Google" in callout semibold, and a small spinner while a page loads. Google's page sits below in a web view clipped to an 18pt radius with an 8pt inset. While the sheet is up, the panel doesn't hide when it loses focus or on outside clicks.
 
 ### Artwork
 - `RemoteImage` fills and crops to the frame its caller sets, so wide video thumbnails are cropped rather than letterboxed. Until it loads it shows a quaternary fill with a tertiary `music.note`. It is hidden from accessibility.

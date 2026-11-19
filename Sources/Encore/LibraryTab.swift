@@ -174,7 +174,7 @@ private struct LikedTile: View {
     }
 }
 
-/// Signed out: connect the account the user is already signed into in a browser.
+/// Signed out: library and playlists need a Google account; search and playback don't.
 struct ConnectView: View {
     let model: AppModel
 
@@ -183,76 +183,18 @@ struct ConnectView: View {
             Image(systemName: "person.crop.circle.badge.plus")
                 .font(.system(size: 36, weight: .light))
                 .foregroundStyle(.secondary)
-            Text("Connect YouTube Music").font(.headline)
-            Text(model.browserProfiles.isEmpty
-                 ? "Sign in at music.youtube.com in Helium, Chrome, Arc, Brave or Edge, then check again."
-                 : "Encore uses the account you're already signed into in your browser.")
+            Text("Sign in to see your library").font(.headline)
+            Text("Your liked songs and playlists come from your Google account. Search and playback work without signing in.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-
-            if model.browserProfiles.isEmpty {
-                Button("Check Again", action: model.refreshBrowserProfiles)
-            } else {
-                VStack(spacing: 6) {
-                    ForEach(model.browserProfiles) { source in
-                        SourceRow(source: source, connecting: model.connecting == source.id) {
-                            Task { await model.connect(source) }
-                        }
-                        .disabled(model.connecting != nil)
-                    }
-                }
+            Button("Sign In with Google", action: model.signIn)
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
+                .controlSize(.large)
                 .padding(.top, 4)
-                Text("macOS will ask to let Encore read that browser's cookie key. Choose Always Allow so Encore can reconnect by itself when Google refreshes the session.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-            if let error = model.connectError {
-                Label(error, systemImage: "exclamationmark.triangle.fill")
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-                    .multilineTextAlignment(.leading)
-            }
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 28)
         .frame(maxHeight: .infinity)
-        .onAppear(perform: model.refreshBrowserProfiles)
-    }
-}
-
-private struct SourceRow: View {
-    let source: BrowserProfile
-    let connecting: Bool
-    let action: () -> Void
-    @State private var hovering = false
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 10) {
-                Group {
-                    if let icon = source.browser.icon {
-                        Image(nsImage: icon).resizable()
-                    } else {
-                        Image(systemName: "globe").font(.title3).foregroundStyle(.secondary)
-                    }
-                }
-                .frame(width: 26, height: 26)
-                Text(source.browser.name).font(.callout.weight(.medium))
-                Text(source.name).font(.callout).foregroundStyle(.secondary).lineLimit(1)
-                Spacer(minLength: 0)
-                if connecting {
-                    ProgressView().controlSize(.small)
-                } else {
-                    Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(.tertiary)
-                }
-            }
-            .padding(.horizontal, 12)
-            .frame(height: 44)
-            .contentShape(.rect)
-            .background(.primary.opacity(hovering ? 0.1 : 0.06), in: .rect(cornerRadius: 12))
-        }
-        .buttonStyle(.plain)
-        .onHover { hovering = $0 }
     }
 }
