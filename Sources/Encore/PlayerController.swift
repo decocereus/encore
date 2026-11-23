@@ -29,12 +29,24 @@ struct Playlist: Identifiable, Equatable, Hashable {
     var isLikedMusic: Bool { id == "VLLM" }
 }
 
+/// A playlist the current account can edit, and whether a given song is already in it.
+/// `id` is the bare playlist ID, without the "VL" browse prefix.
+struct PlaylistChoice: Identifiable, Equatable {
+    var id: String
+    var title: String
+    var thumb: URL?
+    var contains: Bool
+
+    var browseID: String { "VL" + id }
+}
+
 struct PlaylistDetail: Equatable {
     var playlist: Playlist
     var tracks: [Track]
 }
 
 struct TrackState: Equatable {
+    var videoId = ""
     var title = ""
     var artist = ""
     var album = ""
@@ -85,6 +97,7 @@ final class PlayerController: NSObject {
         config.websiteDataStore = WKWebsiteDataStore(forIdentifier: profile.id)
         config.mediaTypesRequiringUserActionForPlayback = []
         let scripts = config.userContentController
+        scripts.addUserScript(WKUserScript(source: mediaHandlersScript, injectionTime: .atDocumentStart, forMainFrameOnly: true))
         scripts.addUserScript(WKUserScript(source: bridgeScript, injectionTime: .atDocumentEnd, forMainFrameOnly: true))
         scripts.add(WeakMessageHandler(self), name: "ytm")
 
@@ -159,6 +172,25 @@ final class PlayerController: NSObject {
         return PlaylistDetail(playlist: header, tracks: tracks)
     }
 
+    /// The account's editable playlists, each marked with whether it already has `videoId`.
+    func playlistChoices(for videoId: String) async throws -> [PlaylistChoice] {
+        let rows = try await ask("return await window.__ytmbar.addablePlaylists(videoId)", ["videoId": videoId])
+            as? [[String: Any]] ?? []
+        return rows.compactMap { row in
+            guard let id = row["id"] as? String else { return nil }
+            return PlaylistChoice(id: id,
+                                  title: row["title"] as? String ?? "",
+                                  thumb: (row["thumb"] as? String).flatMap { $0.isEmpty ? nil : URL(string: $0) },
+                                  contains: row["contains"] as? Bool ?? false)
+        }
+    }
+
+    /// Adds `videoId` to the playlist, or removes it when `include` is false.
+    func setVideo(_ videoId: String, in playlistID: String, included include: Bool) async throws {
+        _ = try await ask("return await window.__ytmbar.setInPlaylist(playlistId, videoId, include)",
+                          ["playlistId": playlistID, "videoId": videoId, "include": include])
+    }
+
     /// The signed-in Google account's display name.
     func accountName() async throws -> String {
         try await ask("return await window.__ytmbar.account()") as? String ?? ""
@@ -216,6 +248,7 @@ final class PlayerController: NSObject {
         guard let dict = body as? [String: Any], dict["type"] as? String == "state" else { return }
         let url: (Any?) -> URL? = { ($0 as? String).flatMap { $0.isEmpty ? nil : URL(string: $0) } }
         var next = TrackState()
+        next.videoId = dict["videoId"] as? String ?? ""
         next.title = dict["title"] as? String ?? ""
         next.artist = dict["artist"] as? String ?? ""
         next.album = dict["album"] as? String ?? ""

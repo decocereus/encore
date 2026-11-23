@@ -35,7 +35,7 @@ struct EncoreView: View {
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(response: 0.42, dampingFraction: 0.86),
                    value: model.expanded)
         .animation(.easeInOut(duration: 0.25), value: model.tab)
-        .animation(.easeInOut(duration: 0.25), value: model.showQueue)
+        .animation(.easeInOut(duration: 0.25), value: model.pane)
     }
 }
 

@@ -23,6 +23,11 @@ enum DrawerTab: String, CaseIterable, Identifiable {
     }
 }
 
+/// What fills the space above the title on Now Playing.
+enum NowPlayingPane {
+    case artwork, upNext, playlists
+}
+
 /// UI state and account actions shared by the panel's views.
 @MainActor
 @Observable
@@ -34,7 +39,7 @@ final class AppModel {
 
     var expanded = false
     var tab: DrawerTab = .nowPlaying
-    var showQueue = false
+    var pane: NowPlayingPane = .artwork
     var searchQuery = ""
     /// Google's sign-in page is showing in the drawer.
     var signingIn = false
@@ -45,6 +50,11 @@ final class AppModel {
     var openPlaylist: Playlist?
     var detail: PlaylistDetail?
     var detailError: String?
+
+    /// Playlists the current song can be added to. `choicesVideoID` is the song they were loaded for.
+    var choices: [PlaylistChoice] = []
+    var choicesVideoID: String?
+    var choicesError: String?
 
     @ObservationIgnored var openSettings: () -> Void = {}
     @ObservationIgnored var hidePanel: () -> Void = {}
@@ -89,16 +99,50 @@ final class AppModel {
         }
     }
 
+    func loadChoices(for videoId: String) async {
+        guard !videoId.isEmpty, choicesVideoID != videoId else { return }
+        choicesVideoID = videoId
+        choices = []
+        choicesError = nil
+        do {
+            let loaded = try await player.playlistChoices(for: videoId)
+            if choicesVideoID == videoId { choices = loaded }
+        } catch {
+            if choicesVideoID == videoId {
+                choicesError = error.localizedDescription
+                choicesVideoID = nil
+            }
+        }
+    }
+
+    /// Adds the song to the playlist, or takes it out if it's already there. The checkmark flips right away
+    /// and flips back if YouTube Music refuses.
+    func toggle(_ choice: PlaylistChoice, videoId: String) async {
+        guard choicesVideoID == videoId, let index = choices.firstIndex(where: { $0.id == choice.id }) else { return }
+        let include = !choice.contains
+        choices[index].contains = include
+        do {
+            try await player.setVideo(videoId, in: choice.id, included: include)
+            choicesError = nil
+            if let open = openPlaylist, open.id == choice.browseID { await self.open(open) }
+        } catch {
+            if choicesVideoID == videoId, let i = choices.firstIndex(where: { $0.id == choice.id }) {
+                choices[i].contains = !include
+            }
+            choicesError = error.localizedDescription
+        }
+    }
+
     func play(_ playlist: Playlist, from track: Track? = nil) {
         player.play(playlist, startingAt: track)
         tab = .nowPlaying
-        showQueue = false
+        pane = .artwork
     }
 
     func play(_ track: Track) {
         player.play(track)
         tab = .nowPlaying
-        showQueue = false
+        pane = .artwork
     }
 
     /// Account-specific state is dropped whenever the signed-in account changes.
@@ -107,6 +151,9 @@ final class AppModel {
         libraryError = nil
         openPlaylist = nil
         detail = nil
+        choices = []
+        choicesVideoID = nil
+        choicesError = nil
     }
 
     func signIn() {

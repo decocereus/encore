@@ -1,3 +1,16 @@
+/// Runs before YouTube Music's own scripts and keeps the media-session handlers it registers, so the bridge can
+/// skip tracks the same way the system media keys would.
+let mediaHandlersScript = #"""
+(() => {
+  const ms = navigator.mediaSession;
+  if (!ms || window.__ytmbarMedia) return;
+  const handlers = {};
+  const original = ms.setActionHandler.bind(ms);
+  ms.setActionHandler = (action, handler) => { handlers[action] = handler; return original(action, handler); };
+  window.__ytmbarMedia = handlers;
+})();
+"""#
+
 /// Injected into music.youtube.com. Reports player state to Swift and exposes `window.__ytmbar` commands.
 let bridgeScript = #"""
 (() => {
@@ -32,8 +45,10 @@ let bridgeScript = #"""
     const p = player();
     const md = navigator.mediaSession && navigator.mediaSession.metadata;
     const cfg = window.ytcfg;
+    const data = p && p.getVideoData ? p.getVideoData() : null;
     return {
       type: 'state',
+      videoId: (data && data.video_id) || '',
       title: (md && md.title) || '',
       artist: (md && md.artist) || '',
       album: (md && md.album) || '',
@@ -50,7 +65,7 @@ let bridgeScript = #"""
   let lastKey = '';
   function report(force) {
     const s = read();
-    const key = JSON.stringify([s.title, s.artist, s.art, s.playing, Math.round(s.duration), s.volume, s.signedIn,
+    const key = JSON.stringify([s.videoId, s.title, s.artist, s.art, s.playing, Math.round(s.duration), s.volume, s.signedIn,
       s.queue.map(q => q.title + (q.selected ? '*' : ''))]);
     if (!force && key === lastKey) return;
     lastKey = key;
@@ -180,6 +195,23 @@ let bridgeScript = #"""
     return tracks;
   }
 
+  function collect(node, key, out = []) {
+    if (!node || typeof node !== 'object') return out;
+    if (node[key]) { out.push(node[key]); return out; }
+    for (const k in node) collect(node[k], key, out);
+    return out;
+  }
+
+  // Prefer the page's own media-session handler, then its player-bar button, then the player API.
+  function skip(action, selector, method) {
+    const handler = window.__ytmbarMedia && window.__ytmbarMedia[action];
+    if (handler) { handler({ action }); return; }
+    const b = bar(selector);
+    if (b) { (b.querySelector('button') || b).click(); return; }
+    const p = player();
+    if (p && p[method]) p[method]();
+  }
+
   const SONGS_FILTER = 'EgWKAQIIAWoMEA4QChADEAQQCRAF';
 
   window.__ytmbar = {
@@ -192,8 +224,8 @@ let bridgeScript = #"""
     },
     play() { const v = video(); if (v && v.paused) window.__ytmbar.toggle(); },
     pause() { const v = video(); if (v && !v.paused) window.__ytmbar.toggle(); },
-    next() { const b = bar('.next-button'); if (b) b.click(); },
-    prev() { const b = bar('.previous-button'); if (b) b.click(); },
+    next() { skip('nexttrack', '.next-button', 'nextVideo'); },
+    prev() { skip('previoustrack', '.previous-button', 'previousVideo'); },
     seek(t) {
       const p = player();
       if (p && p.seekTo) p.seekTo(t, true);
@@ -245,6 +277,24 @@ let bridgeScript = #"""
       const playlistId = browseId.replace(/^VL/, '');
       const endpoint = { watchEndpoint: videoId ? { videoId, playlistId } : { playlistId } };
       if (app) app.dispatchEvent(new CustomEvent('yt-navigate', { bubbles: true, composed: true, detail: { endpoint } }));
+    },
+    // The playlists YouTube Music's own "Save to playlist" dialog offers: only ones this account can edit.
+    async addablePlaylists(videoId) {
+      const json = await innertube('playlist/get_add_to_playlist', { videoIds: [videoId] });
+      return collect(json, 'playlistAddToOptionRenderer').filter(o => o.playlistId).map(o => ({
+        id: o.playlistId,
+        title: runsText(o.title) || (o.title && o.title.simpleText) || '',
+        thumb: lastThumb(findKey(o, 'thumbnails')),
+        contains: o.containsSelectedVideos === 'ALL',
+      }));
+    },
+    async setInPlaylist(playlistId, videoId, include) {
+      const action = include
+        ? { action: 'ACTION_ADD_VIDEO', addedVideoId: videoId, dedupeOption: 'DEDUPE_OPTION_SKIP' }
+        : { action: 'ACTION_REMOVE_VIDEO_BY_VIDEO_ID', removedVideoId: videoId };
+      const json = await innertube('browse/edit_playlist', { playlistId, actions: [action] });
+      if (json.status && json.status !== 'STATUS_SUCCEEDED') throw new Error(`YouTube Music couldn't update the playlist (${json.status}).`);
+      return true;
     },
     async search(query) {
       const json = await innertube('search', { query, params: SONGS_FILTER });
