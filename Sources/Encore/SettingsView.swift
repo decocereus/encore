@@ -3,6 +3,19 @@ import UniformTypeIdentifiers
 
 struct SettingsView: View {
     let model: AppModel
+    let updates: Updates
+
+    var body: some View {
+        TabView {
+            Tab("General", systemImage: "gearshape") { GeneralSettings(model: model) }
+            Tab("About", systemImage: "info.circle") { AboutSettings(updates: updates) }
+        }
+        .frame(width: 460)
+    }
+}
+
+private struct GeneralSettings: View {
+    let model: AppModel
 
     var body: some View {
         @Bindable var ducking = model.ducking
@@ -62,7 +75,6 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 460)
         .fixedSize(horizontal: false, vertical: true)
     }
 

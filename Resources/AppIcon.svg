@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>Encore — Echo</title>
+  <path d="M 280 100 H 744
+      C 809 100 848 100 886 138
+      C 924 176 924 215 924 280
+      V 744
+      C 924 809 924 848 886 886
+      C 848 924 809 924 744 924
+      H 280
+      C 215 924 176 924 138 886
+      C 100 848 100 809 100 744
+      V 280
+      C 100 215 100 176 138 138
+      C 176 100 215 100 280 100 Z" fill="#fff"/>
+  <circle cx="356" cy="562" r="128" fill="#000"/>
+  <circle cx="686" cy="454" r="95" fill="none" stroke="#000" stroke-width="66"/>
+</svg>

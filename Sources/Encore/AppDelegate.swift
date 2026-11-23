@@ -26,6 +26,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let profiles = ProfileStore()
     private let player = PlayerController()
     private let ducking = DuckingSettings()
+    private let updates = Updates()
     private var model: AppModel!
     private var nowPlaying: NowPlaying!
     private var statusItem: NSStatusItem!
@@ -177,6 +178,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(item("Previous", #selector(previousTrack)))
         menu.addItem(.separator())
         menu.addItem(item("Settings…", #selector(openSettingsFromMenu), key: ","))
+        menu.addItem(item("Check for Updates…", #selector(checkForUpdates)))
         menu.addItem(item("Show Web Player", #selector(showWebPlayer)))
         menu.addItem(.separator())
         menu.addItem(item("Quit Encore", #selector(quit), key: "q"))
@@ -193,6 +195,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func nextTrack() { player.next() }
     @objc private func previousTrack() { player.previous() }
     @objc private func openSettingsFromMenu() { showSettings() }
+    @objc private func checkForUpdates() { updates.checkNow() }
     @objc private func quit() { NSApp.terminate(nil) }
 
     @objc private func showWebPlayer() {
@@ -203,7 +206,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func showSettings() {
         hidePanel()
         if settingsWindow == nil {
-            let window = NSWindow(contentViewController: NSHostingController(rootView: SettingsView(model: model)))
+            let window = NSWindow(contentViewController: NSHostingController(rootView: SettingsView(model: model, updates: updates)))
             window.title = "Encore Settings"
             window.styleMask = [.titled, .closable]
             window.isReleasedWhenClosed = false

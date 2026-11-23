@@ -15,7 +15,7 @@ Encore is an unofficial client. It isn't affiliated with or endorsed by Google o
 ## What it does
 
 - **Play from the menu bar.** The pill shows the song and a play/pause button. Option-click the menu bar icon to play or pause without opening anything. Media keys, AirPods controls and Control Center work too.
-- **Expand when you want more.** The drawer has Now Playing (artwork, scrubber, volume, Up Next), Library (Liked Songs and your playlists) and Search.
+- **Expand when you want more.** The drawer has Now Playing (artwork, scrubber, volume, Up Next, and a list for adding the song to your playlists), Library (Liked Songs and your playlists) and Search.
 - **Sign in once, inside the panel.** Google's sign-in page opens in the drawer itself. Approve on your phone or use your password, and Encore stays signed in.
 - **Lower the music while you dictate.** When a dictation app such as [Hex](https://github.com/kitlangton/Hex) opens the microphone, Encore fades the music down, then brings it back when you stop talking. You choose which apps trigger this, and how quiet the music gets, in Settings.
 - **Several accounts.** Each Encore account keeps its own Google sign-in. Switch between them from the account menu.
@@ -25,6 +25,12 @@ Encore is an unofficial client. It isn't affiliated with or endorsed by Google o
 - macOS 26 or later (Encore uses Liquid Glass)
 - Xcode 26 or later to build
 
+## Install
+
+Download the latest `Encore-<version>.dmg` from [Releases](https://github.com/decocereus/encore/releases), open it, and drag Encore into Applications. The app is signed with a Developer ID and notarized by Apple, so it opens without Gatekeeper warnings.
+
+Encore updates itself with [Sparkle](https://sparkle-project.org). It checks GitHub for a new release once a day, and Settings → About has the update options and a Check for Updates button.
+
 ## Build
 
 ```sh
@@ -32,6 +38,23 @@ Encore is an unofficial client. It isn't affiliated with or endorsed by Google o
 ./build.sh --install  # also copies it to /Applications
 open build/Encore.app
 ```
+
+### Release
+
+`release.sh` builds a universal (Apple silicon and Intel) app, signs it with the Developer ID certificate and hardened runtime, packs it into `build/Encore-<version>.dmg`, notarizes it and staples the ticket. It also writes `build/appcast.xml`, the Sparkle feed that tells installed copies about the new version, signed with Encore's update key.
+
+```sh
+./release.sh                  # signed, notarized DMG and appcast
+./release.sh --publish        # also pushes and creates GitHub release v<version>
+./release.sh --skip-notarize  # signed only, to test the pipeline
+```
+
+To ship a new version, raise both `CFBundleShortVersionString` (shown to people) and `CFBundleVersion` (Sparkle compares this one) in `Info.plist`, commit, and run `./release.sh --publish`. The release uploads the DMG and `appcast.xml`. Installed copies read the feed from `releases/latest/download/appcast.xml`, so the newest release is always the one they see.
+
+The release Mac needs two things in its keychain:
+
+- **Notarization credentials** in the profile `encore-notary`. With an App Store Connect API key: `xcrun notarytool store-credentials encore-notary --key AuthKey_<id>.p8 --key-id <id> --issuer <issuer-uuid>`.
+- **The Sparkle signing key** under the account `encore`. Back it up with `.build/artifacts/sparkle/Sparkle/bin/generate_keys --account encore -x encore-sparkle.key` and keep the file somewhere safe. Without it, installed copies reject every future update.
 
 `build.sh` uses `xcrun swift` so it builds with Xcode's toolchain even if another Swift (for example from swiftly) comes first on your `PATH`.
 
