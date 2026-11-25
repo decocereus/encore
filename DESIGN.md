@@ -174,7 +174,7 @@ components:
 
 **Creative North Star: "The Pill Is the Player"**
 
-Encore is one piece of Liquid Glass hanging under the menu bar. At rest it is a 128pt compact player in three rows: the artwork with the title over the artist and an expand chevron, a seek bar, then volume beside previous, play/pause and next. Expanding does not open another window: the same glass shape grows downward into a 620pt drawer, and the artwork moves with it, from a 40pt circle in the pill to a large rounded square in the drawer. Collapsing runs the same movement in reverse.
+Encore is one piece of Liquid Glass hanging under the menu bar. At rest it is a 128pt compact player in three rows: the artwork with the title over the artist, the like and save glyphs and an expand chevron, a seek bar, then volume beside previous, play/pause and next. Expanding does not open another window: the same glass shape grows downward into a 620pt drawer, and the artwork moves with it, from a 40pt circle in the pill to a large rounded square in the drawer. Collapsing runs the same movement in reverse.
 
 The glass is frosted Liquid Glass with nothing painted under it, so the desktop shows through, blurred. The artwork itself is the only colour that changes with the track, and the chrome brings no colour of its own. The one fixed colour is the system accent, and it appears only on controls that start playback. Everything else is drawn in hierarchical system foregrounds (primary, secondary, tertiary) and a short ladder of translucent primary fills. Type is SF Pro at macOS system text styles, and every icon is an SF Symbol.
 
@@ -234,12 +234,13 @@ The chrome is colourless: plain frosted glass, one accent, and a set of transluc
 The panel has a fixed width of 360pt and two fixed heights: pill 128pt and drawer 620pt. It sits inside a 12pt margin that leaves room for the glass edge. Nothing in it reflows; the expanded/collapsed state is the only layout change.
 
 - **Pill:** three rows with 6pt spacing, inset 8pt top and bottom, 8pt leading and 10pt trailing.
-  - **Track row:** a 40pt circular artwork, title over artist (1pt gap), a flexible spacer and a 28pt expand chevron, 10pt apart. Clicking this row expands the drawer; the two rows below keep their clicks for the sliders and buttons.
+  - **Track row:** a 40pt circular artwork, title over artist (1pt gap), a flexible spacer, the 28pt like and save glyphs side by side, and a 28pt expand chevron, 10pt apart. Clicking the row outside its buttons expands the drawer; the two rows below keep their clicks for the sliders and buttons.
   - **Seek row:** elapsed time, a mini seek slider, and the track length, in caption2 monospaced digits, with 8pt spacing and a further 4pt horizontal inset.
   - **Controls row:** a 132pt volume slider, a flexible spacer, then 32pt previous, a 36pt play/pause and 32pt next, 6pt apart.
-- **Drawer:** a 52pt header (account menu or Back on the left, the collapse chevron on the right, and between them the mini now-playing or the duck badge), then the tab content, then the tab capsule with 6pt above and 12pt below.
-- **Now Playing:** a vertical stack with 14pt spacing. It holds the artwork (232pt, with 8pt vertical padding), the title block, the scrubber, the transport (28pt between previous, play and next), and a volume row with an Up Next toggle. Text, scrubber and volume rows sit in a 24pt gutter. Up Next replaces the artwork in the same slot, at 248pt tall.
+- **Drawer:** a 52pt header (account menu or Back on the left, the collapse chevron on the right, and between them the mini now-playing or the duck badge), then the tab content, then the tab capsule with 6pt above and 12pt below. Toasts sit 4pt above the tab capsule, over the faded bottom edge of the content.
+- **Now Playing:** a vertical stack with 14pt spacing. It holds the artwork (232pt, with 8pt vertical padding), the title row, the scrubber, the transport (28pt between previous, play and next), and a volume row with an Up Next toggle. The title row has the 30pt like glyph on the left, the centred title block, and the 30pt save glyph on the right, in an 18pt gutter. Scrubber and volume rows sit in a 24pt gutter. Up Next replaces the artwork in the same slot, at 248pt tall.
 - **Lists:** rows sit inside 10pt horizontal list padding. Section labels align at 18pt, which matches the row content edge (10pt list padding plus 8pt row padding). Rows stack with no gap. Lists hide their scroll indicators and fade their edges (10pt at the top, 28pt at the bottom) so rows pass under the tab capsule.
+- **Library:** the search field on top, then either the playlist list (New Playlist, Liked Songs, then a "Playlists" section) or, while there is a query, search results ("In Your Library" playlists whose names match, then "Songs"). An open playlist or the New Playlist / Edit Details form replaces the whole tab, with Back in the header.
 - **Empty and error states:** centred vertically, with 32pt horizontal insets (28pt in the sign-in prompt), a 12pt or 10pt stack, a headline, secondary callout copy, and standard system buttons.
 - **Settings:** a separate window with a standard grouped `Form`, 460pt wide, sized to its content. It uses system controls only.
 
@@ -255,7 +256,7 @@ Depth comes from material. There is no shadow vocabulary. The panel is a single 
 
 ## Shapes
 
-The form language is continuous curves and capsules. The panel is a continuous rounded rectangle with a 28pt corner radius at both heights: the 128pt pill and the 620pt drawer are the same shape, only taller. Corner radii scale with the size of the element: the 232pt artwork uses 18pt, the 96pt empty-state well 22pt, the 76pt playlist header tile and the 48pt rows' hover plate 12pt, track-row hover plates 10pt, playlist thumbnails 8pt, track thumbnails 6pt. Artwork in the pill (40pt) and the mini player (30pt) is fully circular. Every control capsule (tabs, search field, duck badge, Play button) and every round control (play/pause, glyph hover) is a capsule or a circle. The Liked Songs tile uses a 0.5pt primary stroke at 0.15, the only stroke in the system.
+The form language is continuous curves and capsules. The panel is a continuous rounded rectangle with a 28pt corner radius at both heights: the 128pt pill and the 620pt drawer are the same shape, only taller. Corner radii scale with the size of the element: the 232pt artwork uses 18pt, the 96pt empty-state well 22pt, the 76pt playlist header tile and the 48pt rows' hover plate 12pt, track-row hover plates 10pt, playlist thumbnails 8pt, track thumbnails 6pt. Artwork in the pill (40pt) and the mini player (30pt) is fully circular. Every control capsule (tabs, search field, duck badge, Play button) and every round control (play/pause, glyph hover) is a capsule or a circle. The Liked Songs tile uses a 0.5pt primary stroke at 0.15. The New Playlist tile uses a 1pt dashed primary stroke at 0.2. These are the only strokes in the system.
 
 ## Components
 
@@ -267,6 +268,24 @@ The only filled button in the panel.
 
 ### Collection Play Button
 - **Style:** system `.borderedProminent` with a capsule border shape: the accent fill and a `play.fill` label in callout semibold. Disabled until the playlist's tracks load.
+- **Hover play (playlist rows):** a 28pt accent circle with a white `play.fill` replaces the row's chevron on hover, so a playlist starts without opening it.
+
+### Like Glyph
+- A Glyph Button with `heart` or, when liked, `heart.fill`, swapped with `.symbolEffect(.replace)`. 28pt in the pill and the mini player, 30pt in Now Playing, 26pt on rows. Hidden when signed out or with nothing playing. L toggles it on Now Playing; D dislikes, which also skips the song.
+
+### Save Glyph
+- A Glyph Button that opens a native menu: the account's playlists as checkable items (checked where the song already is), then New Playlist…, then Like and Dislike. The glyph is `plus.circle` when the song is in no playlist, and the SF Symbol `N.circle.fill` when it is in N playlists (up to 50, then `checkmark.circle.fill`). Its tooltip names the playlists. Encore never draws its own badge: Liquid Glass dims flattened overlays.
+
+### Row Actions and Menus
+- Song rows in Library show 26pt glyphs on hover at the trailing edge: like, then save (search results) or remove (`minus.circle`, in playlists you own and Liked Songs), then `ellipsis`. They fade with opacity instead of leaving the view tree, so a menu opened from them stays alive. The row's title gives up room only while hovered.
+- The `ellipsis` menu and the right-click menu are the same native menu: Play, Like, Dislike, Save to Playlist ▸, and Remove from This Playlist where it applies.
+- Your own playlists get an `ellipsis` menu next to Play with Edit Details… and Delete Playlist…. Deleting asks inline, in place of the Play row, with Cancel and a destructive Delete.
+
+### Toast
+- A 28pt capsule at the 0.14 fill with caption-medium text, and a semibold Undo when the action can be taken back. It fades and slides up from the bottom, and clears itself after 4 seconds. Removing a song hides it at once and only sends the change when the toast expires, so Undo needs no second request.
+
+### Playlist Form
+- New Playlist and Edit Details share one form: a headline, a 34pt name field at the 0.08 fill with a 10pt radius, a system segmented picker for Private, Unlisted and Public, and, when creating from a song, a switch row ("Start with {song}") at the 0.06 fill with a 12pt radius. Cancel and Create (or Save) are plain capsule buttons, so the accent stays on play controls; Return submits. The segmented picker and switch are system controls and draw their selected state in the accent, the one place it appears off a play control.
 
 ### Glyph Button
 An icon-only control drawn directly on the glass.
@@ -277,20 +296,20 @@ An icon-only control drawn directly on the glass.
 - Every glyph button carries a `.help` tooltip and an accessibility label.
 
 ### Tab Capsule (Navigation)
-- **Style:** an interactive glass capsule with 4pt padding, holding three Label items (Now Playing, Library, Search) 2pt apart. Each item is 34pt tall with 12pt horizontal padding, in caption medium.
+- **Style:** an interactive glass capsule with 4pt padding, holding two Label items (Now Playing, Library) 2pt apart. Each item is 34pt tall with 12pt horizontal padding, in caption medium.
 - **Selected:** the filled symbol variant, the primary foreground, and a capsule fill at 0.14 that slides between tabs with a matched geometry effect.
 - **Unselected:** outline symbol and secondary foreground.
 
 ### Track Row
 - **Layout:** a 40pt thumbnail (6pt radius), title over subtitle (1pt gap), with 10pt spacing and 8pt × 5pt padding.
-- **Hover:** a 10pt rounded plate at 0.07, and a secondary `play.fill` at the trailing edge.
+- **Hover:** a 10pt rounded plate at 0.07, and a secondary `play.fill` at the trailing edge, or the row's actions where it has them (see Row Actions).
 - **Current:** a semibold title and a trailing secondary `waveform` animated with `.variableColor.iterative`.
 
 ### Playlist Row
-- A 48pt tile (8pt radius), a medium callout title over a caption subtitle, and a tertiary trailing `chevron.right`. 8pt padding, with a 12pt hover plate at 0.07. Liked Songs always appears first, with Encore's heart tile.
+- A 48pt tile (8pt radius), a medium callout title over a caption subtitle, and a tertiary trailing `chevron.right`. 8pt padding, with a 12pt hover plate at 0.07. New Playlist always comes first, with a dashed tile and a `plus`, then Liked Songs with Encore's heart tile.
 
 ### Search Field
-- A plain `TextField` inside a 34pt capsule at 0.08 fill, with a leading secondary magnifying glass and a trailing clear button that appears only when there is text. 12pt inner padding and 16pt outer inset. It takes focus when the tab appears. Results dim to 0.6 while a new search runs.
+- A plain `TextField` inside a 34pt capsule at 0.08 fill, with a leading secondary magnifying glass and a trailing clear button that appears only when there is text. 12pt inner padding and 16pt outer inset. It sits at the top of Library, reads "Your library and YouTube Music" ("Search YouTube Music" when signed out), and takes focus when the tab appears. Song results dim to 0.6 while a new search runs.
 
 ### Scrubbers
 - **Scrubber (drawer):** a small system `Slider` tinted `.primary`, with times below in caption2 monospaced digits. Remaining time is shown with a leading minus. It seeks on release, not while dragging.

@@ -7,7 +7,7 @@ A menu bar player for YouTube Music on macOS. It's a small glass pill under the 
 </p>
 <p>
   <img src="docs/now-playing.png" width="300" alt="The expanded drawer with album art, scrubber, playback controls and tabs">
-  <img src="docs/search.png" width="300" alt="The Search tab with song results and a mini now-playing header">
+  <img src="docs/search.png" width="300" alt="Library search with song results and a mini now-playing header">
 </p>
 
 Encore is an unofficial client. It isn't affiliated with or endorsed by Google or YouTube.
@@ -15,7 +15,10 @@ Encore is an unofficial client. It isn't affiliated with or endorsed by Google o
 ## What it does
 
 - **Play from the menu bar.** The pill shows the song and a play/pause button. Option-click the menu bar icon to play or pause without opening anything. Media keys, AirPods controls and Control Center work too.
-- **Expand when you want more.** The drawer has Now Playing (artwork, scrubber, volume, Up Next, and a list for adding the song to your playlists), Library (Liked Songs and your playlists) and Search.
+- **Like and save from the pill.** The heart likes the song. The save button shows how many of your playlists already have it, and opens a menu with checkmarks to add or remove it, start a new playlist, or dislike the song.
+- **Expand when you want more.** The drawer has Now Playing (artwork, scrubber, volume, Up Next) and Library. Library's search field filters your playlists and searches YouTube Music at once.
+- **Manage your playlists.** Create, rename, change privacy and delete playlists. Every song row has like, save and remove on hover and the same options on right-click. Removing a song gives you a few seconds to undo. Hover a playlist to play it without opening it.
+- **Keys.** Space plays and pauses, L likes and D dislikes on Now Playing, ⌘N starts a new playlist, and Esc collapses the drawer.
 - **Sign in once, inside the panel.** Google's sign-in page opens in the drawer itself. Approve on your phone or use your password, and Encore stays signed in.
 - **Lower the music while you dictate.** When a dictation app such as [Hex](https://github.com/kitlangton/Hex) opens the microphone, Encore fades the music down, then brings it back when you stop talking. You choose which apps trigger this, and how quiet the music gets, in Settings.
 - **Several accounts.** Each Encore account keeps its own Google sign-in. Switch between them from the account menu.

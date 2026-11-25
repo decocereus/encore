@@ -11,12 +11,37 @@ struct QueueItem: Identifiable, Equatable {
     var selected: Bool
 }
 
+/// Thumbs up, thumbs down, or neither. Liking a song puts it in Liked Songs.
+enum LikeStatus: String {
+    case like = "LIKE"
+    case dislike = "DISLIKE"
+    case indifferent = "INDIFFERENT"
+}
+
+enum PlaylistPrivacy: String, CaseIterable, Identifiable {
+    case `private` = "PRIVATE"
+    case unlisted = "UNLISTED"
+    case `public` = "PUBLIC"
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .private: "Private"
+        case .unlisted: "Unlisted"
+        case .public: "Public"
+        }
+    }
+}
+
 struct Track: Identifiable, Equatable, Hashable {
     var id: String { videoId }
     var videoId: String
     var title: String
     var subtitle: String
     var thumb: URL?
+    /// What YouTube Music reported with the list, when it said.
+    var likeStatus: LikeStatus?
 }
 
 /// A playlist, including Liked Music. `id` is the InnerTube browse ID ("VL…").
@@ -27,15 +52,15 @@ struct Playlist: Identifiable, Equatable, Hashable {
     var thumb: URL?
 
     var isLikedMusic: Bool { id == "VLLM" }
+    /// The bare playlist ID that edit calls take.
+    var playlistID: String { id.hasPrefix("VL") ? String(id.dropFirst(2)) : id }
 }
 
-/// A playlist the current account can edit, and whether a given song is already in it.
-/// `id` is the bare playlist ID, without the "VL" browse prefix.
+/// A playlist the current account can edit. `id` is the bare playlist ID, without the "VL" browse prefix.
 struct PlaylistChoice: Identifiable, Equatable {
     var id: String
     var title: String
     var thumb: URL?
-    var contains: Bool
 
     var browseID: String { "VL" + id }
 }
@@ -43,6 +68,9 @@ struct PlaylistChoice: Identifiable, Equatable {
 struct PlaylistDetail: Equatable {
     var playlist: Playlist
     var tracks: [Track]
+    /// The account owns it, so it can be renamed, deleted and have songs removed.
+    var editable = false
+    var privacy: PlaylistPrivacy?
 }
 
 struct TrackState: Equatable {
@@ -169,20 +197,53 @@ final class PlayerController: NSObject {
         if header.title.isEmpty { header.title = collection.title }
         if header.thumb == nil { header.thumb = collection.thumb }
         let tracks = (dict["tracks"] as? [[String: Any]] ?? []).compactMap(Self.track)
-        return PlaylistDetail(playlist: header, tracks: tracks)
+        return PlaylistDetail(playlist: header, tracks: tracks,
+                              editable: dict["editable"] as? Bool ?? false,
+                              privacy: (dict["privacy"] as? String).flatMap(PlaylistPrivacy.init(rawValue:)))
     }
 
-    /// The account's editable playlists, each marked with whether it already has `videoId`.
-    func playlistChoices(for videoId: String) async throws -> [PlaylistChoice] {
-        let rows = try await ask("return await window.__ytmbar.addablePlaylists(videoId)", ["videoId": videoId])
-            as? [[String: Any]] ?? []
+    /// Likes, dislikes or clears the rating of a song.
+    func rate(_ videoId: String, _ status: LikeStatus) async throws {
+        _ = try await ask("return await window.__ytmbar.rate(videoId, status)", ["videoId": videoId, "status": status.rawValue])
+    }
+
+    func likeStatus(of videoId: String) async throws -> LikeStatus {
+        let raw = try await ask("return await window.__ytmbar.likeStatus(videoId)", ["videoId": videoId]) as? String
+        return raw.flatMap(LikeStatus.init(rawValue:)) ?? .indifferent
+    }
+
+    /// Creates a playlist, optionally with songs already in it, and returns its bare playlist ID.
+    func createPlaylist(title: String, privacy: PlaylistPrivacy, videoIds: [String]) async throws -> String {
+        let id = try await ask("return await window.__ytmbar.createPlaylist(title, privacy, videoIds)",
+                               ["title": title, "privacy": privacy.rawValue, "videoIds": videoIds], retry: false) as? String
+        guard let id, !id.isEmpty else { throw BridgeError.failed("YouTube Music couldn't create the playlist.") }
+        return id
+    }
+
+    func editPlaylist(_ playlistID: String, title: String, privacy: PlaylistPrivacy) async throws {
+        _ = try await ask("return await window.__ytmbar.editPlaylist(playlistId, title, privacy)",
+                          ["playlistId": playlistID, "title": title, "privacy": privacy.rawValue])
+    }
+
+    func deletePlaylist(_ playlistID: String) async throws {
+        _ = try await ask("return await window.__ytmbar.deletePlaylist(playlistId)", ["playlistId": playlistID])
+    }
+
+    /// The playlists the account can edit.
+    func editablePlaylists() async throws -> [PlaylistChoice] {
+        let rows = try await ask("return await window.__ytmbar.addablePlaylists()") as? [[String: Any]] ?? []
         return rows.compactMap { row in
             guard let id = row["id"] as? String else { return nil }
             return PlaylistChoice(id: id,
                                   title: row["title"] as? String ?? "",
-                                  thumb: (row["thumb"] as? String).flatMap { $0.isEmpty ? nil : URL(string: $0) },
-                                  contains: row["contains"] as? Bool ?? false)
+                                  thumb: (row["thumb"] as? String).flatMap { $0.isEmpty ? nil : URL(string: $0) })
         }
+    }
+
+    /// Every song in a playlist, by video ID.
+    func videoIds(inPlaylist playlistID: String) async throws -> Set<String> {
+        let ids = try await ask("return await window.__ytmbar.playlistVideoIds(id)", ["id": playlistID]) as? [String] ?? []
+        return Set(ids)
     }
 
     /// Adds `videoId` to the playlist, or removes it when `include` is false.
@@ -196,12 +257,14 @@ final class PlayerController: NSObject {
         try await ask("return await window.__ytmbar.account()") as? String ?? ""
     }
 
-    private func ask(_ script: String, _ arguments: [String: Any] = [:]) async throws -> Any? {
+    /// `retry` repeats a failed call once. Calls that aren't safe to repeat, such as creating a playlist, turn it off.
+    private func ask(_ script: String, _ arguments: [String: Any] = [:], retry: Bool = true) async throws -> Any? {
         guard let webView else { throw BridgeError.notReady }
         try await waitForBridge(webView)
         do {
             return try await webView.callAsyncJavaScript(script, arguments: arguments, contentWorld: .page)
         } catch {
+            guard retry else { throw error }
             // A signed-in page navigates once while it settles, which aborts in-flight fetches. Retry once.
             try await Task.sleep(for: .seconds(1.5))
             try await waitForBridge(webView)
@@ -214,7 +277,8 @@ final class PlayerController: NSObject {
         return Track(videoId: id,
                      title: row["title"] as? String ?? "",
                      subtitle: row["subtitle"] as? String ?? "",
-                     thumb: (row["thumb"] as? String).flatMap(URL.init(string:)))
+                     thumb: (row["thumb"] as? String).flatMap(URL.init(string:)),
+                     likeStatus: (row["likeStatus"] as? String).flatMap(LikeStatus.init(rawValue:)))
     }
 
     private static func collection(_ row: [String: Any]) -> Playlist? {
@@ -305,7 +369,14 @@ extension PlayerController: WKNavigationDelegate, WKUIDelegate {
 
 enum BridgeError: LocalizedError {
     case notReady
-    var errorDescription: String? { "YouTube Music didn't finish loading. Check your connection and try again." }
+    case failed(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .notReady: "YouTube Music didn't finish loading. Check your connection and try again."
+        case .failed(let message): message
+        }
+    }
 }
 
 /// WKUserContentController retains its handlers; this breaks the cycle.

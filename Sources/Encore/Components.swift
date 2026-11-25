@@ -22,13 +22,19 @@ struct RemoteImage: View {
     }
 }
 
-struct TrackRow: View {
+/// A song in a list. Clicking it plays. `actions` fade in on hover over the trailing edge; they stay in the view
+/// tree while hidden so a menu opened from them survives the pointer leaving the row.
+struct TrackRow<Actions: View>: View {
     let title: String
     let subtitle: String
     let thumb: URL?
     var isCurrent = false
     let action: () -> Void
+    @ViewBuilder var actions: () -> Actions
     @State private var hovering = false
+    @State private var actionsWidth: CGFloat = 0
+
+    private var hasActions: Bool { Actions.self != EmptyView.self }
 
     var body: some View {
         Button(action: action) {
@@ -40,7 +46,9 @@ struct TrackRow: View {
                     Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1)
                 }
                 Spacer(minLength: 0)
-                if isCurrent {
+                if hovering, hasActions {
+                    Color.clear.frame(width: actionsWidth, height: 1)
+                } else if isCurrent {
                     Image(systemName: "waveform").font(.caption).foregroundStyle(.secondary)
                         .symbolEffect(.variableColor.iterative, options: .repeating)
                 } else if hovering {
@@ -50,11 +58,27 @@ struct TrackRow: View {
             .padding(.horizontal, 8)
             .padding(.vertical, 5)
             .contentShape(.rect)
-            .background { if hovering { RoundedRectangle(cornerRadius: 10).fill(.primary.opacity(0.07)) } }
         }
         .buttonStyle(.plain)
+        .overlay(alignment: .trailing) {
+            if hasActions {
+                actions()
+                    .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { actionsWidth = $0 }
+                    .padding(.trailing, 4)
+                    .opacity(hovering ? 1 : 0)
+                    .allowsHitTesting(hovering)
+            }
+        }
+        .background { if hovering { RoundedRectangle(cornerRadius: 10).fill(.primary.opacity(0.07)) } }
         .onHover { hovering = $0 }
+        .accessibilityElement(children: .contain)
         .accessibilityLabel("\(title), \(subtitle)")
+    }
+}
+
+extension TrackRow where Actions == EmptyView {
+    init(title: String, subtitle: String, thumb: URL?, isCurrent: Bool = false, action: @escaping () -> Void) {
+        self.init(title: title, subtitle: subtitle, thumb: thumb, isCurrent: isCurrent, action: action) { EmptyView() }
     }
 }
 

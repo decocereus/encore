@@ -36,6 +36,18 @@ struct EncoreView: View {
                    value: model.expanded)
         .animation(.easeInOut(duration: 0.25), value: model.tab)
         .animation(.easeInOut(duration: 0.25), value: model.pane)
+        .animation(.easeInOut(duration: 0.2), value: model.toast?.id)
+        // The heart shows the playing song's rating, fetched once per song.
+        .task(id: "\(model.player.state.videoId) \(model.player.state.signedIn)") {
+            let state = model.player.state
+            guard state.signedIn, !state.videoId.isEmpty else { return }
+            await model.loadLikeStatus(for: state.videoId)
+        }
+        // Which playlists hold which songs, for the save glyph and every Save to Playlist menu.
+        .task(id: "\(model.profiles.currentID) \(model.player.state.signedIn)") {
+            guard model.player.state.signedIn else { return }
+            await model.loadPlaylists()
+        }
     }
 }
 
@@ -72,6 +84,11 @@ private struct Pill: View {
                 }
 
                 Spacer(minLength: 4)
+
+                HStack(spacing: 0) {
+                    LikeButton(model: model)
+                    SaveMenu(model: model)
+                }
 
                 GlyphButton(symbol: "chevron.down", label: "Expand", size: 28, font: .callout.weight(.semibold)) {
                     model.expanded = true
@@ -123,13 +140,19 @@ private struct Drawer: View {
                 switch model.tab {
                 case .nowPlaying: NowPlayingTab(model: model, namespace: namespace)
                 case .library: LibraryTab(model: model)
-                case .search: SearchTab(model: model)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .overlay(alignment: .bottom) { ToastView(model: model).padding(.bottom, 4) }
             TabBar(model: model)
                 .padding(.bottom, 12)
                 .padding(.top, 6)
+        }
+        .background {
+            Button("New Playlist") { model.startNewPlaylist(with: nil) }
+                .keyboardShortcut("n", modifiers: .command)
+                .opacity(0)
+                .accessibilityHidden(true)
         }
     }
 }
@@ -139,9 +162,9 @@ private struct DrawerHeader: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            if model.tab == .library, model.openPlaylist != nil {
-                GlyphButton(symbol: "chevron.left", label: "Back to Library", size: 32, font: .callout.weight(.semibold)) {
-                    model.openPlaylist = nil
+            if model.tab == .library, model.form != nil || model.openPlaylist != nil {
+                GlyphButton(symbol: "chevron.left", label: "Back", size: 32, font: .callout.weight(.semibold)) {
+                    if model.form != nil { model.form = nil } else { model.openPlaylist = nil }
                 }
                 .keyboardShortcut("[", modifiers: .command)
             } else {
@@ -188,6 +211,7 @@ private struct MiniNowPlaying: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Now playing: \(state.title), \(state.artist)")
+            LikeButton(model: model, font: .caption)
             PlayPauseButton(player: model.player, size: 28)
         }
         .frame(maxWidth: .infinity)

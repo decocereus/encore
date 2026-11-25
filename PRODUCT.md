@@ -21,7 +21,7 @@ A native SwiftUI interface (Liquid Glass on macOS 26) over YouTube Music's own w
 - Multiple Google accounts are switched through isolated Encore accounts, each with its own sign-in.
 
 ## Capabilities and Constraints
-- Default state is a compact card (art, title, transport). The user expands it in place to reach Library (liked songs, playlists), Search and Up Next.
+- Default state is a compact card (art, title, transport). The pill also likes the song and saves it to playlists without expanding. The user expands it in place to reach Up Next and Library, which holds liked songs, playlists and search in one place.
 - Playback engine: hidden WKWebView on music.youtube.com with an injected JS bridge. Library and search use YouTube Music's InnerTube API from inside the page, signed with the page's own session.
 - Sign-in happens once per account on Google's own page, shown inside the drawer (no separate window). Passkeys can't work for google.com in a non-browser app, so the page hides them and Google offers a phone prompt or password. Copying cookies from a browser was tried and dropped: copied sessions go stale and need keychain prompts.
 - Dictation ducking: when a chosen app uses the microphone, fade volume down to a set level, restore when it stops. The trigger apps are user configurable (Hex by default, or any app using the mic). The duck level is adjustable.

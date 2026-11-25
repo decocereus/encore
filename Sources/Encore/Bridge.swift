@@ -137,11 +137,13 @@ let bridgeScript = #"""
     const videoId = (r.playlistItemData && r.playlistItemData.videoId) || (watch && watch.watchEndpoint && watch.watchEndpoint.videoId);
     if (!videoId) return null;
     const thumbs = (r.thumbnail && r.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails) || [];
+    const like = findKey(r.menu, 'likeButtonRenderer');
     return {
       videoId,
       title: columnText(r.flexColumns && r.flexColumns[0]),
       subtitle: columnText(r.flexColumns && r.flexColumns[1]),
       thumb: thumbs.length ? thumbs[thumbs.length - 1].url : '',
+      likeStatus: (like && like.likeStatus) || '',
     };
   }
 
@@ -178,15 +180,17 @@ let bridgeScript = #"""
     return legacy && legacy.continuation;
   }
 
-  // Long playlists arrive in pages of about 100; follow the continuation tokens.
+  // Long playlists arrive in pages of about 100; follow the continuation tokens. Only the playlist's own shelf
+  // counts: the page's other continuation loads YouTube Music's suggested songs.
   async function allTracks(json) {
     const seen = new Set();
     const tracks = [];
     const add = (node) => listItems(node).map(toTrack).filter(Boolean).forEach(t => {
       if (!seen.has(t.videoId)) { seen.add(t.videoId); tracks.push(t); }
     });
-    add(json);
-    let token = continuationToken(json);
+    const shelf = findKey(json, 'musicPlaylistShelfRenderer') || json;
+    add(shelf);
+    let token = continuationToken(shelf);
     for (let page = 0; token && page < 30; page++) {
       const more = await innertube('browse', { continuation: token });
       add(more);
@@ -264,11 +268,15 @@ let bridgeScript = #"""
       const json = await innertube('browse', { browseId });
       const header = findKey(json, 'musicResponsiveHeaderRenderer') || findKey(json, 'musicDetailHeaderRenderer') || {};
       const thumbs = findKey(header, 'thumbnails');
+      // Only playlists the account owns carry an edit header.
+      const edit = findKey(json, 'musicPlaylistEditHeaderRenderer');
       return {
         id: browseId,
         title: runsText(header.title),
         subtitle: [runsText(header.subtitle), runsText(header.secondSubtitle)].filter(Boolean).join(' · '),
         thumb: lastThumb(thumbs),
+        editable: !!edit,
+        privacy: (edit && edit.privacy) || '',
         tracks: await allTracks(json),
       };
     },
@@ -279,14 +287,19 @@ let bridgeScript = #"""
       if (app) app.dispatchEvent(new CustomEvent('yt-navigate', { bubbles: true, composed: true, detail: { endpoint } }));
     },
     // The playlists YouTube Music's own "Save to playlist" dialog offers: only ones this account can edit.
-    async addablePlaylists(videoId) {
-      const json = await innertube('playlist/get_add_to_playlist', { videoIds: [videoId] });
-      return collect(json, 'playlistAddToOptionRenderer').filter(o => o.playlistId).map(o => ({
+    // It no longer says which of them hold a song, so Encore indexes their songs itself (playlistVideoIds).
+    async addablePlaylists() {
+      const json = await innertube('playlist/get_add_to_playlist', { videoIds: [''] });
+      // Liked Music is in this list too; Encore likes songs with its own button instead.
+      return collect(json, 'playlistAddToOptionRenderer').filter(o => o.playlistId && o.playlistId !== 'LM').map(o => ({
         id: o.playlistId,
         title: runsText(o.title) || (o.title && o.title.simpleText) || '',
         thumb: lastThumb(findKey(o, 'thumbnails')),
-        contains: o.containsSelectedVideos === 'ALL',
       }));
+    },
+    async playlistVideoIds(playlistId) {
+      const json = await innertube('browse', { browseId: 'VL' + playlistId });
+      return (await allTracks(json)).map(t => t.videoId);
     },
     async setInPlaylist(playlistId, videoId, include) {
       const action = include
@@ -294,6 +307,35 @@ let bridgeScript = #"""
         : { action: 'ACTION_REMOVE_VIDEO_BY_VIDEO_ID', removedVideoId: videoId };
       const json = await innertube('browse/edit_playlist', { playlistId, actions: [action] });
       if (json.status && json.status !== 'STATUS_SUCCEEDED') throw new Error(`YouTube Music couldn't update the playlist (${json.status}).`);
+      return true;
+    },
+    async likeStatus(videoId) {
+      const json = await innertube('next', { videoId, isAudioOnly: true });
+      const entity = findKey(json, 'likeStatusEntity');
+      const legacy = findKey(json, 'likeButtonRenderer');
+      return (entity && entity.likeStatus) || (legacy && legacy.likeStatus) || 'INDIFFERENT';
+    },
+    async rate(videoId, status) {
+      const path = { LIKE: 'like/like', DISLIKE: 'like/dislike', INDIFFERENT: 'like/removelike' }[status];
+      await innertube(path, { target: { videoId } });
+      return true;
+    },
+    async createPlaylist(title, privacy, videoIds) {
+      const json = await innertube('playlist/create', { title, description: '', privacyStatus: privacy, videoIds });
+      if (!json.playlistId) throw new Error("YouTube Music couldn't create the playlist.");
+      return json.playlistId;
+    },
+    async editPlaylist(playlistId, title, privacy) {
+      const actions = [
+        { action: 'ACTION_SET_PLAYLIST_NAME', playlistName: title },
+        { action: 'ACTION_SET_PLAYLIST_PRIVACY', playlistPrivacy: privacy },
+      ];
+      const json = await innertube('browse/edit_playlist', { playlistId, actions });
+      if (json.status && json.status !== 'STATUS_SUCCEEDED') throw new Error(`YouTube Music couldn't update the playlist (${json.status}).`);
+      return true;
+    },
+    async deletePlaylist(playlistId) {
+      await innertube('playlist/delete', { playlistId });
       return true;
     },
     async search(query) {
